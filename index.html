@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MongoDB Driver Compatibility Checker</title>
+  <style>
+    :root {
+      --primary-color: #00684a;
+      --primary-hover: #005a3f;
+      --success-color: #10b981;
+      --error-color: #ef4444;
+      --warning-color: #f59e0b;
+
+      /* Light mode */
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8fafc;
+      --bg-tertiary: #f1f5f9;
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --border-color: #e2e8f0;
+      --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-primary: #0f172a;
+        --bg-secondary: #1e293b;
+        --bg-tertiary: #334155;
+        --text-primary: #f1f5f9;
+        --text-secondary: #94a3b8;
+        --border-color: #475569;
+        --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 2rem 1rem;
+      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+      color: var(--text-primary);
+      min-height: 100vh;
+      transition: all 0.3s ease;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: var(--bg-primary);
+      border-radius: 16px;
+      box-shadow: var(--shadow-lg);
+      padding: 2rem;
+      border: 1px solid var(--border-color);
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--primary-color);
+      margin-bottom: 2rem;
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary-color), #10b981);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow);
+    }
+
+    .theme-toggle:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 1rem;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    input:disabled, select:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background: var(--bg-tertiary);
+    }
+
+    input:focus, select:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(0, 104, 74, 0.1);
+      transform: translateY(-1px);
+    }
+
+    input:disabled:focus, select:disabled:focus {
+      border-color: var(--border-color);
+      box-shadow: none;
+      transform: none;
+    }
+
+    input::placeholder {
+      color: var(--text-secondary);
+    }
+
+    /* Version input improvements */
+    .version-input-container {
+      position: relative;
+    }
+
+    .version-indicator {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.2rem;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .version-indicator.show {
+      opacity: 1;
+    }
+
+    .version-help {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.25rem;
+      min-height: 1rem;
+      transition: color 0.3s ease;
+    }
+
+    .version-help.loaded {
+      color: var(--primary-color);
+    }
+
+    .version-help.error {
+      color: var(--error-color);
+    }
+
+    /* Enhanced input styling for version field */
+    #driverVersion {
+      padding-right: 3rem;
+    }
+
+    /* Custom version dropdown */
+    .version-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--bg-primary);
+      border: 2px solid var(--border-color);
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 1000;
+      box-shadow: var(--shadow);
+      display: none;
+    }
+
+    .version-dropdown.show {
+      display: block;
+    }
+
+    .version-option {
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      border-bottom: 1px solid var(--border-color);
+      transition: background-color 0.2s ease;
+      font-size: 0.9rem;
+    }
+
+    .version-option:hover {
+      background: var(--bg-secondary);
+    }
+
+    .version-option:last-child {
+      border-bottom: none;
+    }
+
+    .version-option .version-number {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .version-option .version-date {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-left: 0.5rem;
+    }
+
+    .version-option.highlighted {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .version-option.highlighted .version-date {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    /* Version format indicators */
+    .version-valid {
+      color: var(--success-color);
+    }
+
+    .version-invalid {
+      color: var(--error-color);
+    }
+
+    .version-warning {
+      color: var(--warning-color);
+    }
+
+    button {
+      width: 100%;
+      padding: 0.875rem 1.5rem;
+      background: linear-gradient(135deg, var(--primary-color), #10b981);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+      filter: brightness(1.1);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    #result {
+      margin-top: 2rem;
+      padding: 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      text-align: center;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .success {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success-color);
+      border: 2px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .error {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--error-color);
+      border: 2px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .mongodb-logo {
+      width: 24px;
+      height: 24px;
+      display: inline-block;
+      margin-right: 0.5rem;
+      vertical-align: middle;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 1rem 0.5rem;
+      }
+
+      .container {
+        padding: 1.5rem;
+        border-radius: 12px;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .theme-toggle {
+        top: 0.5rem;
+        right: 0.5rem;
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+      }
+    }
+
+    /* Loading animation */
+    .loading {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .loading button {
+      background: var(--text-secondary);
+      cursor: not-allowed;
+    }
+
+    /* Smooth transitions for theme switching */
+    * {
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-secondary);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--text-secondary);
+    }
+
+    /* Admonition styles */
+    .admonition {
+      margin-bottom: 2rem;
+      padding: 1.25rem;
+      border-radius: 8px;
+      border-left: 4px solid var(--warning-color);
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .admonition-title {
+      display: flex;
+      align-items: center;
+      font-weight: 700;
+      color: var(--warning-color);
+      margin-bottom: 0.75rem;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .admonition-icon {
+      margin-right: 0.5rem;
+      font-size: 1.1rem;
+    }
+
+    .admonition-content {
+      color: var(--text-primary);
+      line-height: 1.6;
+      font-size: 0.9rem;
+    }
+
+    /* Footer styles */
+    .footer {
+      margin-top: 3rem;
+      padding: 2rem 1rem 1rem;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .footer-content {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .footer p {
+      margin: 0.5rem 0;
+    }
+
+    .footer a {
+      color: var(--primary-color);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    .footer-divider {
+      width: 50px;
+      height: 2px;
+      background: linear-gradient(135deg, var(--primary-color), #10b981);
+      margin: 1rem auto;
+      border-radius: 1px;
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark/light mode">
+    <span id="theme-icon">🌙</span>
+  </button>
+
+  <div class="container">
+    <h1>
+      <svg class="mongodb-logo" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12.09 2.4c-.72-.48-1.46-.48-2.18 0l-7 4.8c-.44.3-.71.8-.71 1.33v7.54c0 .53.27 1.03.71 1.33l7 4.8c.72.48 1.46.48 2.18 0l7-4.8c.44-.3.71-.8.71-1.33V8.53c0-.53-.27-1.03-.71-1.33l-7-4.8z"/>
+      </svg>
+      MongoDB Driver Compatibility Checker
+    </h1>
+
+    <div class="admonition">
+      <div class="admonition-title">
+        <span class="admonition-icon">⚠️</span>
+        Compatibility Notice
+      </div>
+      <div class="admonition-content">
+        Per the <a href="https://www.mongodb.com/legal/support-policy/lifecycles" target="_blank" rel="noopener" style="color: var(--primary-color);">MongoDB Official Support Policy</a>, drivers released more than 3 years after a MongoDB Server version's end of life date will not be compatible with that server version.
+        <br/><br/>
+        Use this tool to check if the version of your MongoDB driver should be considered compatible with the selected server version.
+        <br/><br/>
+        "Compatibility" in this case implies support for that server version hasn't been explicitly removed from the driver, so your application should continue to connect and operate as expected.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="serverVersion">Server Version</label>
+      <select id="serverVersion">
+        <option value="">Select a MongoDB version...</option>
+      </select>
+      <div class="version-help" id="serverVersionHelp">
+        Loading MongoDB server versions...
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="language">Driver / Language</label>
+      <select id="language" disabled>
+        <option value="">Select a server version first...</option>
+        <option value="c">C</option>
+        <option value="cpp">C++</option>
+        <option value="csharp">C#</option>
+        <option value="go">Go</option>
+        <option value="java">Java / Scala / Kotlin</option>
+        <option value="nodejs">Node.js</option>
+        <option value="php">PHP</option>
+        <option value="python">Python</option>
+        <option value="ruby">Ruby</option>
+        <option value="rust">Rust</option>
+      </select>
+      <div class="version-help" id="languageHelp">
+        Select a MongoDB server version first
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="driverVersion">Driver Version</label>
+      <div class="version-input-container">
+        <input id="driverVersion" type="text" placeholder="Select a driver first..." autocomplete="off" disabled />
+        <div class="version-dropdown" id="versionDropdown"></div>
+        <div class="version-indicator" id="versionIndicator"></div>
+      </div>
+      <div class="version-help" id="versionHelp">
+        Select a driver first to see available versions
+      </div>
+    </div>
+
+    <button id="checkBtn">Check Compatibility</button>
+
+    <div id="result"></div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-divider"></div>
+      <p>&copy; 2025 by <a href="https://alexbevi.com">Alex Bevilacqua</a></p>
+      <p>Built with ❤️ for the MongoDB developer community</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/semver@7.5.4/dist/semver.min.js" onerror="console.warn('Failed to load semver library, using fallback validation')"></script>
+  <script>
+    const serverVersionSelect = document.getElementById('serverVersion');
+    const serverVersionHelp = document.getElementById('serverVersionHelp');
+    const languageSelect = document.getElementById('language');
+    const languageHelp = document.getElementById('languageHelp');
+    const driverVersionInput = document.getElementById('driverVersion');
+    const versionDropdown = document.getElementById('versionDropdown');
+    const versionIndicator = document.getElementById('versionIndicator');
+    const versionHelp = document.getElementById('versionHelp');
+    const result = document.getElementById('result');
+    const checkBtn = document.getElementById('checkBtn');
+
+    let serverData = [];
+    let currentDriverData = null;
+    let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    let highlightedIndex = -1;
+
+    // Theme management
+    function toggleTheme() {
+      isDarkMode = !isDarkMode;
+      updateTheme();
+    }
+
+    function updateTheme() {
+      const themeIcon = document.getElementById('theme-icon');
+      if (isDarkMode) {
+        document.documentElement.style.setProperty('--bg-primary', '#0f172a');
+        document.documentElement.style.setProperty('--bg-secondary', '#1e293b');
+        document.documentElement.style.setProperty('--bg-tertiary', '#334155');
+        document.documentElement.style.setProperty('--text-primary', '#f1f5f9');
+        document.documentElement.style.setProperty('--text-secondary', '#94a3b8');
+        document.documentElement.style.setProperty('--border-color', '#475569');
+        document.documentElement.style.setProperty('--shadow', '0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2)');
+        document.documentElement.style.setProperty('--shadow-lg', '0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2)');
+        themeIcon.textContent = '☀️';
+      } else {
+        document.documentElement.style.setProperty('--bg-primary', '#ffffff');
+        document.documentElement.style.setProperty('--bg-secondary', '#f8fafc');
+        document.documentElement.style.setProperty('--bg-tertiary', '#f1f5f9');
+        document.documentElement.style.setProperty('--text-primary', '#1e293b');
+        document.documentElement.style.setProperty('--text-secondary', '#64748b');
+        document.documentElement.style.setProperty('--border-color', '#e2e8f0');
+        document.documentElement.style.setProperty('--shadow', '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)');
+        document.documentElement.style.setProperty('--shadow-lg', '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)');
+        themeIcon.textContent = '🌙';
+      }
+    }
+
+    // Initialize theme
+    updateTheme();
+
+    // Listen for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      isDarkMode = e.matches;
+      updateTheme();
+    });
+
+    // Wait for DOM and scripts to load
+    document.addEventListener('DOMContentLoaded', function() {
+      loadServerVersions();
+
+      // Server version selection handler
+      serverVersionSelect.addEventListener('change', function() {
+        const selectedServer = this.value;
+
+        // Reset subsequent selections
+        languageSelect.selectedIndex = 0;
+        driverVersionInput.value = '';
+        driverVersionInput.disabled = true;
+        updateVersionIndicator('', '');
+        hideVersionDropdown();
+        currentDriverData = null;
+
+        if (selectedServer) {
+          // Enable language selection
+          languageSelect.disabled = false;
+          languageSelect.querySelector('option[value=""]').textContent = 'Select a driver...';
+          languageHelp.textContent = '10 drivers available';
+          languageHelp.className = 'version-help loaded';
+
+          // Update server help with selected version info
+          const serverInfo = serverData.find(s => s.version === selectedServer);
+          if (serverInfo) {
+            const releaseDate = new Date(serverInfo.releaseDate).toLocaleDateString();
+            const eolDate = serverInfo.eolDate === 'TBD' ? 'TBD' : new Date(serverInfo.eolDate).toLocaleDateString();
+            serverVersionHelp.textContent = `Selected: MongoDB ${selectedServer} (released ${releaseDate}, EOL: ${eolDate})`;
+            serverVersionHelp.className = 'version-help loaded';
+          }
+        } else {
+          // Disable language selection
+          languageSelect.disabled = true;
+          languageSelect.querySelector('option[value=""]').textContent = 'Select a server version first...';
+          languageHelp.textContent = 'Select a MongoDB server version first';
+          languageHelp.className = 'version-help';
+
+          // Reset server help to show latest version
+          const latestServer = serverData[0];
+          if (latestServer) {
+            const releaseDate = new Date(latestServer.releaseDate).toLocaleDateString();
+            serverVersionHelp.textContent = `Latest: MongoDB ${latestServer.version} (released ${releaseDate}) • ${serverData.length} versions available`;
+            serverVersionHelp.className = 'version-help loaded';
+          }
+        }
+
+        // Reset driver version help
+        versionHelp.textContent = 'Select a driver first to see available versions';
+        versionHelp.className = 'version-help';
+      });
+
+      // Language selection handler
+      languageSelect.addEventListener('change', function() {
+        const selectedLanguage = this.value;
+
+        // Reset driver version
+        driverVersionInput.value = '';
+        updateVersionIndicator('', '');
+        hideVersionDropdown();
+
+        if (selectedLanguage) {
+          // Enable driver version input
+          driverVersionInput.disabled = false;
+          driverVersionInput.placeholder = 'e.g. 6.0.0';
+          loadDriverVersions(selectedLanguage);
+        } else {
+          // Disable driver version input
+          driverVersionInput.disabled = true;
+          driverVersionInput.placeholder = 'Select a driver first...';
+          versionHelp.textContent = 'Select a driver first to see available versions';
+          versionHelp.className = 'version-help';
+          currentDriverData = null;
+        }
+      });
+
+      // Real-time version validation and filtering
+      driverVersionInput.addEventListener('input', function() {
+        // Skip validation if this is a programmatic change from dropdown selection
+        if (this.dataset.programmaticChange === 'true') {
+          return;
+        }
+
+        const inputValue = this.value;
+        const validation = validateVersionInput(inputValue);
+
+        // Filter and show versions based on input
+        filterAndShowVersions(inputValue);
+
+        if (validation.type === 'not-found' && currentDriverData) {
+          versionHelp.textContent = `Version not found in database. Latest: ${currentDriverData.versions[0]?.version || 'unknown'}`;
+          versionHelp.className = 'version-help error';
+        } else if (validation.type === 'invalid') {
+          versionHelp.textContent = 'Invalid semantic version format (e.g., 1.2.3)';
+          versionHelp.className = 'version-help error';
+        } else if (validation.type === 'found') {
+          const versionData = currentDriverData.versions.find(v => v.version === inputValue);
+          if (versionData) {
+            versionHelp.textContent = `Released: ${new Date(versionData.releaseDate).toLocaleDateString()}`;
+            versionHelp.className = 'version-help loaded';
+          }
+        } else if (currentDriverData && validation.type === 'valid') {
+          const latestVersion = currentDriverData.versions[0]?.version || 'unknown';
+          versionHelp.textContent = `Latest: ${latestVersion} • ${currentDriverData.versions.length} versions available`;
+          versionHelp.className = 'version-help loaded';
+        }
+      });
+
+      // Handle keyboard navigation
+      driverVersionInput.addEventListener('keydown', handleKeyboardNavigation);
+
+      // Hide dropdown when clicking outside
+      document.addEventListener('click', function(event) {
+        if (!event.target.closest('.version-input-container')) {
+          hideVersionDropdown();
+        }
+      });
+
+      // Handle blur event
+      driverVersionInput.addEventListener('blur', function() {
+        // Small delay to allow click on dropdown option
+        setTimeout(() => {
+          if (!document.activeElement.closest('.version-dropdown')) {
+            hideVersionDropdown();
+          }
+        }, 150);
+      });
+
+      // Handle focus event
+      driverVersionInput.addEventListener('focus', function() {
+        if (this.value && /\d/.test(this.value)) {
+          filterAndShowVersions(this.value);
+        }
+      });
+    });
+
+    async function loadServerVersions() {
+      try {
+        const res = await fetch('./data/server_versions.json');
+        serverData = await res.json();
+
+        // Sort server versions in descending order (newest first)
+        serverData.sort((a, b) => {
+          // Simple version comparison - assumes versions like "8.0", "7.0", etc.
+          const aVersion = parseFloat(a.version);
+          const bVersion = parseFloat(b.version);
+          return bVersion - aVersion;
+        });
+
+        serverData.forEach(sv => {
+          const option = document.createElement('option');
+          option.value = sv.version;
+          option.textContent = `MongoDB ${sv.version}`;
+          serverVersionSelect.appendChild(option);
+        });
+
+        // Show latest server version info
+        const latestServer = serverData[0];
+        if (latestServer) {
+          const releaseDate = new Date(latestServer.releaseDate).toLocaleDateString();
+          serverVersionHelp.textContent = `Latest: MongoDB ${latestServer.version} (released ${releaseDate}) • ${serverData.length} versions available`;
+          serverVersionHelp.className = 'version-help loaded';
+        }
+      } catch (error) {
+        showResult('❌ Failed to load server versions', 'error');
+        serverVersionHelp.textContent = 'Failed to load server versions';
+        serverVersionHelp.className = 'version-help error';
+      }
+    }
+
+    async function loadDriverData(language) {
+      const res = await fetch(`./data/${language}.json`);
+      return await res.json();
+    }
+
+    function isDriverCompatible(driverReleaseDate, serverEolDate) {
+      if (serverEolDate === 'TBD') return true; // Current versions are supported
+
+      const release = new Date(driverReleaseDate);
+      const eol = new Date(serverEolDate);
+      const cutoff = new Date(eol);
+      cutoff.setFullYear(cutoff.getFullYear() + 3);
+      return release <= cutoff;
+    }
+
+    // Simple semver validation function as fallback
+    function isValidSemver(version) {
+      if (typeof semver !== 'undefined' && semver.valid) {
+        return semver.valid(version);
+      }
+      // Fallback regex for basic semver validation
+      const semverRegex = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/;
+      return semverRegex.test(version);
+    }
+
+    // Enhanced version validation with visual feedback
+    function validateVersionInput(version) {
+      if (!version) {
+        updateVersionIndicator('', '');
+        return { valid: false, type: 'empty' };
+      }
+
+      const isValid = isValidSemver(version);
+      const existsInData = currentDriverData && currentDriverData.versions.some(v => v.version === version);
+
+      if (!isValid) {
+        updateVersionIndicator('❌', 'version-invalid');
+        return { valid: false, type: 'invalid' };
+      }
+
+      if (existsInData) {
+        updateVersionIndicator('✅', 'version-valid');
+        return { valid: true, type: 'found' };
+      } else if (currentDriverData) {
+        updateVersionIndicator('⚠️', 'version-warning');
+        return { valid: true, type: 'not-found' };
+      } else {
+        updateVersionIndicator('✅', 'version-valid');
+        return { valid: true, type: 'valid' };
+      }
+    }
+
+    function updateVersionIndicator(icon, className) {
+      versionIndicator.textContent = icon;
+      versionIndicator.className = `version-indicator ${className}`;
+      if (icon) {
+        versionIndicator.classList.add('show');
+      } else {
+        versionIndicator.classList.remove('show');
+      }
+    }
+
+    // Load driver versions and populate dropdown when needed
+    async function loadDriverVersions(language) {
+      try {
+        versionHelp.textContent = 'Loading driver versions...';
+        versionHelp.className = 'version-help';
+
+        currentDriverData = await loadDriverData(language);
+
+        if (currentDriverData && currentDriverData.versions) {
+          // Sort versions in descending order (newest first)
+          const sortedVersions = [...currentDriverData.versions].sort((a, b) => {
+            if (typeof semver !== 'undefined' && semver.rcompare) {
+              return semver.rcompare(a.version, b.version);
+            }
+            // Fallback: simple string comparison
+            return b.version.localeCompare(a.version, undefined, { numeric: true });
+          });
+
+          currentDriverData.versions = sortedVersions;
+
+          const latestVersion = sortedVersions[0]?.version || 'unknown';
+          versionHelp.textContent = `Latest: ${latestVersion} • ${currentDriverData.versions.length} versions available`;
+          versionHelp.className = 'version-help loaded';
+
+          // Add repository link if available
+          if (currentDriverData.repository) {
+            const repoLink = document.createElement('a');
+            repoLink.href = currentDriverData.repository + "/releases";
+            repoLink.target = '_blank';
+            repoLink.rel = 'noopener';
+            repoLink.style.marginLeft = '0.5rem';
+            repoLink.textContent = 'View releases';
+            versionHelp.appendChild(repoLink);
+          }
+        }
+
+        // Re-validate current input
+        validateVersionInput(driverVersionInput.value);
+
+      } catch (error) {
+        versionHelp.textContent = 'Failed to load driver versions';
+        versionHelp.className = 'version-help error';
+        currentDriverData = null;
+      }
+    }
+
+    // Filter and display versions based on input
+    function filterAndShowVersions(inputValue) {
+      if (!currentDriverData || !currentDriverData.versions) {
+        hideVersionDropdown();
+        return;
+      }
+
+      // Only show dropdown if at least one digit has been typed
+      const hasDigit = /\d/.test(inputValue);
+      if (!hasDigit || inputValue.length === 0) {
+        hideVersionDropdown();
+        return;
+      }
+
+      // Filter versions that start with or contain the input
+      const filteredVersions = currentDriverData.versions.filter(version => {
+        return version.version.toLowerCase().includes(inputValue.toLowerCase());
+      });
+
+      if (filteredVersions.length === 0) {
+        hideVersionDropdown();
+        return;
+      }
+
+      // Populate dropdown
+      versionDropdown.innerHTML = '';
+      filteredVersions.slice(0, 10).forEach((version, index) => {
+        const option = document.createElement('div');
+        option.className = 'version-option';
+        option.innerHTML = `
+          <span class="version-number">${version.version}</span>
+          <span class="version-date">${new Date(version.releaseDate).toLocaleDateString()}</span>
+        `;
+
+        option.addEventListener('click', () => {
+          // Set flag to prevent input event validation
+          driverVersionInput.dataset.programmaticChange = 'true';
+          driverVersionInput.value = version.version;
+          hideVersionDropdown();
+
+          // Manually validate and update help text for selected version
+          const versionData = currentDriverData.versions.find(v => v.version === version.version);
+          if (versionData) {
+            updateVersionIndicator('✅', 'version-valid');
+            versionHelp.textContent = `Released: ${new Date(versionData.releaseDate).toLocaleDateString()}`;
+            versionHelp.className = 'version-help loaded';
+          }
+
+          driverVersionInput.focus();
+
+          // Remove flag after a short delay
+          setTimeout(() => {
+            delete driverVersionInput.dataset.programmaticChange;
+          }, 10);
+        });
+
+        versionDropdown.appendChild(option);
+      });
+
+      showVersionDropdown();
+      highlightedIndex = -1;
+    }
+
+    function showVersionDropdown() {
+      versionDropdown.classList.add('show');
+    }
+
+    function hideVersionDropdown() {
+      versionDropdown.classList.remove('show');
+      highlightedIndex = -1;
+    }
+
+    // Handle keyboard navigation
+    function handleKeyboardNavigation(event) {
+      const options = versionDropdown.querySelectorAll('.version-option');
+      if (options.length === 0) return;
+
+      switch (event.key) {
+        case 'ArrowDown':
+          event.preventDefault();
+          highlightedIndex = Math.min(highlightedIndex + 1, options.length - 1);
+          updateHighlight(options);
+          break;
+        case 'ArrowUp':
+          event.preventDefault();
+          highlightedIndex = Math.max(highlightedIndex - 1, -1);
+          updateHighlight(options);
+          break;
+        case 'Enter':
+          event.preventDefault();
+          if (highlightedIndex >= 0 && options[highlightedIndex]) {
+            options[highlightedIndex].click();
+          }
+          break;
+        case 'Escape':
+          hideVersionDropdown();
+          break;
+      }
+    }
+
+    function updateHighlight(options) {
+      options.forEach((option, index) => {
+        if (index === highlightedIndex) {
+          option.classList.add('highlighted');
+        } else {
+          option.classList.remove('highlighted');
+        }
+      });
+    }    function showResult(message, type) {
+      result.textContent = message;
+      result.className = type;
+      result.style.display = 'flex';
+    }
+
+    function setLoading(loading) {
+      if (loading) {
+        checkBtn.textContent = 'Checking...';
+        checkBtn.disabled = true;
+        document.body.classList.add('loading');
+      } else {
+        checkBtn.textContent = 'Check Compatibility';
+        checkBtn.disabled = false;
+        document.body.classList.remove('loading');
+      }
+    }
+
+    document.getElementById('checkBtn').addEventListener('click', async () => {
+      const serverVersion = serverVersionSelect.value;
+      const language = languageSelect.value;
+      const inputVersion = driverVersionInput.value.trim();
+
+      result.style.display = 'none';
+
+      if (!serverVersion) {
+        showResult('⚠️ Please select a MongoDB server version', 'error');
+        return;
+      }
+
+      if (!language) {
+        showResult('⚠️ Please select a driver/language', 'error');
+        return;
+      }
+
+      if (!inputVersion) {
+        showResult('⚠️ Please enter a driver version', 'error');
+        return;
+      }
+
+      const validation = validateVersionInput(inputVersion);
+      if (!validation.valid) {
+        showResult('❌ Invalid semantic version format (e.g., 1.2.3)', 'error');
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        // Use cached driver data if available, otherwise load it
+        const driverData = currentDriverData || await loadDriverData(language);
+        const match = driverData.versions.find(v => v.version === inputVersion);
+
+        if (!match) {
+          const latestVersion = driverData.versions[0]?.version;
+          const suggestion = latestVersion ? ` Try the latest version: ${latestVersion}` : '';
+          showResult(`❌ Driver version ${inputVersion} not found in database.${suggestion}`, 'error');
+          return;
+        }
+
+        const serverInfo = serverData.find(s => s.version === serverVersion);
+        if (!serverInfo) {
+          showResult(`❌ Server version ${serverVersion} not found`, 'error');
+          return;
+        }
+
+        const supported = isDriverCompatible(match.releaseDate, serverInfo.eolDate);
+
+        if (supported) {
+          const releaseDate = new Date(match.releaseDate).toLocaleDateString();
+          showResult(`✅ Driver ${inputVersion} (released ${releaseDate}) can be considered compatible with MongoDB ${serverVersion}`, 'success');
+        } else {
+          showResult(`❌ Driver ${inputVersion} should NOT be considered compatible with MongoDB ${serverVersion}`, 'error');
+        }
+      } catch (error) {
+        showResult('❌ Failed to check compatibility. Please try again.', 'error');
+      } finally {
+        setLoading(false);
+      }
+    });
+  </script>
+</body>
+</html>
