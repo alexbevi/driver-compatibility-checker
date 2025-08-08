@@ -67,7 +67,8 @@ Options:
 2. **Filter & Validate**: Removes prereleases, drafts, and invalid semantic versions
 3. **Compare Versions**: Checks against existing data to find new releases
 4. **Update Data**: Merges new releases with existing data, maintaining sort order
-5. **Commit Changes**: Automatically commits and pushes updates if changes are found
+5. **Collect Changes**: For bulk updates, collects all updated files via artifacts
+6. **Commit & Push**: Automatically commits and pushes updates if changes are found
 
 ### Smart Updates
 
@@ -76,6 +77,7 @@ Options:
 - **Rate Limiting**: Includes delays and retry logic to respect GitHub API limits
 - **Duplicate Prevention**: Prevents duplicate versions in the data files
 - **Size Management**: Limits each file to 100 most recent versions
+- **Conflict Resolution**: Bulk updates use artifacts to collect changes and push atomically
 
 ### Error Handling
 
@@ -179,6 +181,11 @@ To modify update behavior:
 4. **Permission Errors**
    - Ensure workflow permissions are correctly set
    - Check that `GITHUB_TOKEN` has necessary permissions
+
+5. **Changes Not Pushed (Fixed)**
+   - Previous issue: Bulk workflow wasn't pushing changes properly
+   - Solution: Now uses artifacts to collect changes and atomic push
+   - Individual workflows push directly from matrix jobs
 
 ### Debug Mode
 
