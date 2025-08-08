@@ -252,7 +252,11 @@ jobs:
 
             if (needsUpdate) {
               if (FORCE_RECREATE) {
+                console.log('🔄 Force recreating data file...');
                 existingData.versions = processedReleases;
+                // Add a comment to ensure the file changes when force recreating
+                existingData.lastUpdated = new Date().toISOString();
+                existingData.forceRecreated = true;
               } else {
                 // Merge new releases with existing ones
                 const existingVersions = new Set(existingData.versions.map(v => v.version));
@@ -266,6 +270,11 @@ jobs:
                   .sort((a, b) => compareVersions(a.version, b.version));
 
                 existingData.versions = allVersions;
+
+                // Update timestamp for normal updates too
+                existingData.lastUpdated = new Date().toISOString();
+                // Remove forceRecreated flag if it exists
+                delete existingData.forceRecreated;
               }
 
               // Limit to most recent 100 versions
@@ -284,6 +293,12 @@ jobs:
               writeOutput('total_versions', existingData.versions.length);
             } else {
               console.log('ℹ️ No update needed');
+
+              // For force recreate, we still want to ensure outputs are set
+              if (FORCE_RECREATE && existingData.versions.length > 0) {
+                writeOutput('latest_version', existingData.versions[0].version);
+                writeOutput('total_versions', existingData.versions.length);
+              }
             }
 
           } catch (error) {
@@ -323,11 +338,23 @@ jobs:
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add data/${{ inputs.driver_name }}.json
-        git commit -m "🔄 Update ${{ inputs.driver_display_name }} driver data
+
+        # Check if this was a force recreate
+        if [ "${{ inputs.force_recreate }}" == "true" ]; then
+          git commit -m "🔄 Force recreate ${{ inputs.driver_display_name }} driver data
+
+        - Latest version: ${{ steps.update.outputs.latest_version }}
+        - Total versions: ${{ steps.update.outputs.total_versions }}
+        - Force recreated: $(date -u +'%Y-%m-%d %H:%M:%S UTC')
+
+        Complete rebuild from ${{ inputs.repo_name }}"
+        else
+          git commit -m "🔄 Update ${{ inputs.driver_display_name }} driver data
 
         - Latest version: ${{ steps.update.outputs.latest_version }}
         - Total versions: ${{ steps.update.outputs.total_versions }}
         - Updated: $(date -u +'%Y-%m-%d %H:%M:%S UTC')
 
         Auto-updated by GitHub Actions from ${{ inputs.repo_name }}"
+        fi
         git push
