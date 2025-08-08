@@ -377,16 +377,16 @@
       margin-bottom: 2rem;
       padding: 1.25rem;
       border-radius: 8px;
-      border-left: 4px solid var(--warning-color);
-      background: rgba(245, 158, 11, 0.1);
-      border: 1px solid rgba(245, 158, 11, 0.2);
+      border-left: 4px solid var(--primary-color);
+      background: rgba(0, 104, 74, 0.1);
+      border: 1px solid rgba(0, 104, 74, 0.2);
     }
 
     .admonition-title {
       display: flex;
       align-items: center;
       font-weight: 700;
-      color: var(--warning-color);
+      color: var(--primary-color);
       margin-bottom: 0.75rem;
       font-size: 0.9rem;
       text-transform: uppercase;
@@ -448,22 +448,22 @@
   </button>
 
   <div class="container">
+    <img src="MongoDB_SpringGreen.png" alt="MongoDB Logo" style="max-width: 100%; height: auto;" />
     <h1>
-      <svg class="mongodb-logo" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12.09 2.4c-.72-.48-1.46-.48-2.18 0l-7 4.8c-.44.3-.71.8-.71 1.33v7.54c0 .53.27 1.03.71 1.33l7 4.8c.72.48 1.46.48 2.18 0l7-4.8c.44-.3.71-.8.71-1.33V8.53c0-.53-.27-1.03-.71-1.33l-7-4.8z"/>
-      </svg>
-      MongoDB Driver Compatibility Checker
+      Driver Compatibility Checker
     </h1>
+
+    <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem; font-size: 1.1rem; line-height: 1.6;">
+      Use this tool to check if the version of your <a href="https://www.mongodb.com/docs/drivers/" target="_blank" rel="noopener" style="color: var(--primary-color);">MongoDB driver</a> should be considered compatible with the selected server version.
+    </p>
 
     <div class="admonition">
       <div class="admonition-title">
-        <span class="admonition-icon">⚠️</span>
-        Compatibility Notice
+        <span class="admonition-icon">ℹ️</span>
+        Note
       </div>
       <div class="admonition-content">
         Per the <a href="https://www.mongodb.com/legal/support-policy/lifecycles" target="_blank" rel="noopener" style="color: var(--primary-color);">MongoDB Official Support Policy</a>, drivers released more than 3 years after a MongoDB Server version's end of life date should not be considered supported, and may no longer be compatible with that server version.
-        <br/><br/>
-        Use this tool to check if the version of your MongoDB driver should be considered compatible with the selected server version.
         <br/><br/>
         "Compatibility" in this case implies support for that server version hasn't been explicitly removed from the driver, so your application should continue to connect and operate as expected.
       </div>
@@ -656,6 +656,21 @@
           versionHelp.textContent = 'Select a driver first to see available versions';
           versionHelp.className = 'version-help';
           currentDriverData = null;
+        }
+      });
+
+      // Add Enter key listeners for compatibility check
+      serverVersionSelect.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          document.getElementById('checkBtn').click();
+        }
+      });
+
+      languageSelect.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          document.getElementById('checkBtn').click();
         }
       });
 
@@ -936,6 +951,21 @@
     // Handle keyboard navigation
     function handleKeyboardNavigation(event) {
       const options = versionDropdown.querySelectorAll('.version-option');
+
+      // Handle Enter key
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        if (options.length > 0 && highlightedIndex >= 0 && options[highlightedIndex]) {
+          // Select highlighted dropdown option
+          options[highlightedIndex].click();
+        } else {
+          // Trigger compatibility check
+          document.getElementById('checkBtn').click();
+        }
+        return;
+      }
+
+      // Handle other navigation keys only when dropdown is visible
       if (options.length === 0) return;
 
       switch (event.key) {
@@ -948,12 +978,6 @@
           event.preventDefault();
           highlightedIndex = Math.max(highlightedIndex - 1, -1);
           updateHighlight(options);
-          break;
-        case 'Enter':
-          event.preventDefault();
-          if (highlightedIndex >= 0 && options[highlightedIndex]) {
-            options[highlightedIndex].click();
-          }
           break;
         case 'Escape':
           hideVersionDropdown();
