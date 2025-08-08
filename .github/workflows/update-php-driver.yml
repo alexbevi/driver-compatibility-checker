@@ -4,7 +4,7 @@ on:
   schedule:
     # Run daily at staggered times
     - cron: '0 4 * * *'
-  
+
   workflow_dispatch:
     inputs:
       force_recreate:
@@ -20,9 +20,9 @@ jobs:
       driver_name: 'php'
       driver_display_name: 'PHP'
       repo_name: 'mongodb/mongo-php-driver'
-      force_recreate: ${{ github.event.inputs.force_recreate == true }}
+      force_recreate: ${{ fromJSON(github.event.inputs.force_recreate || 'false') }}
     secrets: inherit
-    
+
   notify:
     needs: update-php
     runs-on: ubuntu-latest
@@ -35,7 +35,7 @@ jobs:
         echo "**Repository:** https://github.com/mongodb/mongo-php-driver" >> $GITHUB_STEP_SUMMARY
         echo "**Force Recreate:** ${{ github.event.inputs.force_recreate }}" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        
+
         if [ "${{ needs.update-php.result }}" == "success" ]; then
           echo "✅ **Status:** Workflow completed successfully" >> $GITHUB_STEP_SUMMARY
         else

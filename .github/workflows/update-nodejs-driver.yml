@@ -20,7 +20,7 @@ jobs:
       driver_name: 'nodejs'
       driver_display_name: 'Node.js'
       repo_name: 'mongodb/node-mongodb-native'
-      force_recreate: ${{ github.event.inputs.force_recreate == true }}
+      force_recreate: ${{ fromJSON(github.event.inputs.force_recreate || 'false') }}
     secrets: inherit
 
   notify:
