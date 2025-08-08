@@ -2,13 +2,9 @@
 
 A comprehensive static web application that helps developers determine if a specific MongoDB driver version is compatible with a given MongoDB server version. It uses MongoDB's [official support lifecycle policy](https://www.mongodb.com/legal/support-policy/lifecycles), which mandates drivers support server versions up to **3 years beyond EOL**.
 
----
-
 ## 🌐 Live Demo
 
-[🔗 View App on GitHub Pages](https://<your-username>.github.io/<repo-name>/)
-
----
+[🔗 View App on GitHub Pages](https://alexbevi.com/driver-compatibility-checker/)
 
 ## ✨ Features
 
@@ -23,8 +19,6 @@ A comprehensive static web application that helps developers determine if a spec
 * 📱 **Responsive Design** - Works seamlessly on desktop and mobile devices
 * 🎨 **Modern UI** - Professional interface with smooth animations and hover effects
 * 🔗 **GitHub Integration** - Direct links to official repositories and release notes
-
----
 
 ## 🎮 User Experience
 
@@ -45,90 +39,24 @@ A comprehensive static web application that helps developers determine if a spec
 - **Manual Toggle** - Switch themes manually with the moon/sun button
 - **Smooth Transitions** - All theme changes animate smoothly
 
----
-
 ## 🎯 Supported MongoDB Drivers
 
 This application provides comprehensive compatibility checking for all major MongoDB drivers:
 
-| Driver | Language | Repository | Latest Version |
-|--------|----------|------------|----------------|
-| **C** | C | [mongo-c-driver](https://github.com/mongodb/mongo-c-driver) | 1.29.0 |
-| **C++** | C++ | [mongo-cxx-driver](https://github.com/mongodb/mongo-cxx-driver) | 4.0.0 |
-| **C#/.NET** | C# | [mongo-csharp-driver](https://github.com/mongodb/mongo-csharp-driver) | 3.4.2 |
-| **Go** | Go | [mongo-go-driver](https://github.com/mongodb/mongo-go-driver) | 2.2.3 |
-| **Java** | Java | [mongo-java-driver](https://github.com/mongodb/mongo-java-driver) | 5.5.1 |
-| **Node.js** | JavaScript | [node-mongodb-native](https://github.com/mongodb/node-mongodb-native) | 6.18.0 |
-| **PHP** | PHP | [mongo-php-driver](https://github.com/mongodb/mongo-php-driver) | 2.1.1 |
-| **Python** | Python | [mongo-python-driver](https://github.com/mongodb/mongo-python-driver) | 4.14.0 |
-| **Ruby** | Ruby | [mongo-ruby-driver](https://github.com/mongodb/mongo-ruby-driver) | 2.21.2 |
-| **Rust** | Rust | [mongo-rust-driver](https://github.com/mongodb/mongo-rust-driver) | 3.2.4 |
+| Driver | Language | Repository |
+|--------|----------|------------|
+| **C** | C | [mongo-c-driver](https://github.com/mongodb/mongo-c-driver) |
+| **C++** | C++ | [mongo-cxx-driver](https://github.com/mongodb/mongo-cxx-driver) |
+| **C#/.NET** | C# | [mongo-csharp-driver](https://github.com/mongodb/mongo-csharp-driver) |
+| **Go** | Go | [mongo-go-driver](https://github.com/mongodb/mongo-go-driver) |
+| **Java** | Java | [mongo-java-driver](https://github.com/mongodb/mongo-java-driver) |
+| **Node.js** | JavaScript | [node-mongodb-native](https://github.com/mongodb/node-mongodb-native) |
+| **PHP** | PHP | [mongo-php-driver](https://github.com/mongodb/mongo-php-driver) |
+| **Python** | Python | [mongo-python-driver](https://github.com/mongodb/mongo-python-driver) |
+| **Ruby** | Ruby | [mongo-ruby-driver](https://github.com/mongodb/mongo-ruby-driver) |
+| **Rust** | Rust | [mongo-rust-driver](https://github.com/mongodb/mongo-rust-driver) |
 
 *Driver data is regularly updated from official GitHub repositories*
-
----
-
-## 🗂️ Directory Structure
-
-```
-/
-├── mongodb_driver_checker.html  # Main SPA with modern UI
-├── data/
-│   ├── server_versions.json     # MongoDB server version data
-│   ├── c.json                   # C driver versions
-│   ├── cpp.json                 # C++ driver versions
-│   ├── csharp.json              # C#/.NET driver versions
-│   ├── go.json                  # Go driver versions
-│   ├── java.json                # Java driver versions
-│   ├── nodejs.json              # Node.js driver versions
-│   ├── php.json                 # PHP driver versions
-│   ├── python.json              # Python driver versions
-│   ├── ruby.json                # Ruby driver versions
-│   └── rust.json                # Rust driver versions
-└── README.md                    # Project documentation
-```
-
----
-
-## 📊 Example Data Format
-
-### `data/server_versions.json`
-
-```json
-[
-  {
-    "version": "8.0",
-    "releaseDate": "2024-11-05",
-    "eolDate": "2029-11-30"
-  },
-  {
-    "version": "7.0",
-    "releaseDate": "2023-08-15",
-    "eolDate": "2026-08-15"
-  },
-  {
-    "version": "6.0",
-    "releaseDate": "2022-07-18",
-    "eolDate": "2025-07-18"
-  }
-]
-```
-
-### Driver Data Format (e.g., `data/nodejs.json`)
-
-```json
-{
-  "driver": "Node.js",
-  "repository": "https://github.com/mongodb/node-mongodb-native",
-  "versions": [
-    { "version": "6.18.0", "releaseDate": "2025-07-30" },
-    { "version": "6.17.0", "releaseDate": "2025-06-25" },
-    { "version": "6.16.0", "releaseDate": "2025-05-28" }
-  ]
-}
-```
-
----
 
 ## 🚀 Getting Started
 
@@ -144,23 +72,58 @@ This application provides comprehensive compatibility checking for all major Mon
 4. Access your app at `https://<your-username>.github.io/<repo-name>/`
 5. Update the demo link in this README with your actual URL
 
----
+## 🔄 Automated Data Updates
+
+This repository includes comprehensive GitHub Actions workflows to automatically keep driver version data up-to-date:
+
+### 🤖 Automation Features
+
+* **🕐 Scheduled Updates** - Individual drivers update daily at staggered times to avoid API rate limits
+* **📦 Bulk Updates** - Weekly comprehensive updates of all drivers
+* **🎯 Selective Updates** - Manual triggers for specific drivers or combinations
+* **🔄 Smart Merging** - Only adds new releases, preserves existing data
+* **⚡ Force Rebuild** - Option to completely recreate data files with all available releases
+* **🛡️ Rate Limit Handling** - Built-in retry logic and delays to respect GitHub API limits
+* **📊 Comprehensive Logging** - Detailed workflow summaries and commit messages
+
+### 🚀 Manual Triggers
+
+You can manually update driver data anytime:
+
+1. **Single Driver**: Go to Actions → "Update [Language] Driver" → Run workflow
+2. **All Drivers**: Go to Actions → "Update Driver Data" → Run workflow
+3. **Bulk Operations**: Go to Actions → "Bulk Update All Drivers" → Run workflow
+4. **Test System**: Go to Actions → "Test Driver Update" → Run workflow
+
+### 📈 Data Freshness
+
+- **Individual drivers**: Updated daily at staggered times (1:00-5:30 AM UTC)
+- **Bulk updates**: Weekly on Sundays at 6:00 AM UTC
+- **Manual updates**: Available anytime via GitHub Actions interface
+- **Version limit**: Each driver maintains up to 100 most recent versions
+
+For detailed workflow documentation, see [`.github/workflows/README.md`](.github/workflows/README.md).
 
 ## 🔄 Updating Driver Data
 
-Driver version data is sourced from official MongoDB GitHub repositories. To update:
+## 🔄 Updating Driver Data (Legacy/Manual)
 
-1. **Automated Updates**: The data can be refreshed by fetching from GitHub APIs:
+> **Note**: Driver data is now automatically updated via GitHub Actions. Manual updates are only needed for custom modifications or troubleshooting.
+
+Driver version data is sourced from official MongoDB GitHub repositories. To update manually:
+
+1. **Automated Updates** (Recommended): Use the GitHub Actions workflows described above
+
+2. **Manual API Fetching**: The data can be refreshed by fetching from GitHub APIs:
    - `https://api.github.com/repos/mongodb/mongo-<driver>-driver/releases`
 
-2. **Manual Updates**: Edit the JSON files in the `data/` directory following the format shown above
+3. **Manual File Updates**: Edit the JSON files in the `data/` directory following the format shown above
 
-3. **Adding New Drivers**:
+4. **Adding New Drivers**:
    - Create a new JSON file in `data/` with driver version information
+   - Add the driver to the GitHub Actions matrix in workflow files
    - Update the driver selection dropdown in the HTML file
    - Add appropriate styling and logos if desired
-
----
 
 ## 🛠 Built With
 
@@ -171,8 +134,6 @@ Driver version data is sourced from official MongoDB GitHub repositories. To upd
 * **Icons**: Unicode symbols and custom CSS styling
 * **Theming**: CSS custom properties with automatic dark/light mode detection
 * **No Dependencies**: Works entirely in the browser without build tools or frameworks
-
----
 
 ## 🎨 Technical Highlights
 
@@ -193,8 +154,6 @@ Driver version data is sourced from official MongoDB GitHub repositories. To upd
 - **Contextual Help** - Dynamic help text that updates based on selections
 - **Error Prevention** - Validation prevents invalid combinations before submission
 - **Visual Feedback** - Icons and colors provide immediate status indication
-
----
 
 ## 🤝 Contributing
 
@@ -227,26 +186,6 @@ Contributions are welcome! Here are some ways you can help:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
----
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🙋‍♂️ Support & Questions
-
-- **Issues**: Report bugs or request features via [GitHub Issues](https://github.com/<username>/<repo>/issues)
-- **Documentation**: Check the [MongoDB Driver Documentation](https://www.mongodb.com/docs/drivers/)
-- **Community**: Join the [MongoDB Community Forums](https://www.mongodb.com/community/forums/)
-
----
-
-## ⭐ Acknowledgments
-
-- MongoDB team for maintaining excellent driver documentation
-- MongoDB Community for feedback and contributions
-- GitHub API for providing reliable access to release data
-
-*Last updated: August 2025*

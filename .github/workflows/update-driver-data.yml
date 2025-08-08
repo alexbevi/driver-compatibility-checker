@@ -1,0 +1,334 @@
+name: Update Driver Data
+
+on:
+  # Run weekly on Sundays at 6 AM UTC
+  schedule:
+    - cron: '0 6 * * 0'
+
+  # Allow manual trigger with options
+  workflow_dispatch:
+    inputs:
+      driver:
+        description: 'Driver to update (leave empty for all)'
+        required: false
+        type: choice
+        options:
+          - 'all'
+          - 'c'
+          - 'cpp'
+          - 'csharp'
+          - 'go'
+          - 'java'
+          - 'nodejs'
+          - 'php'
+          - 'python'
+          - 'ruby'
+          - 'rust'
+        default: 'all'
+      force_recreate:
+        description: 'Force recreate JSON files with all releases'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  update-driver-data:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        driver:
+          - name: 'c'
+            repo: 'mongodb/mongo-c-driver'
+            display_name: 'C'
+          - name: 'cpp'
+            repo: 'mongodb/mongo-cxx-driver'
+            display_name: 'C++'
+          - name: 'csharp'
+            repo: 'mongodb/mongo-csharp-driver'
+            display_name: 'C#'
+          - name: 'go'
+            repo: 'mongodb/mongo-go-driver'
+            display_name: 'Go'
+          - name: 'java'
+            repo: 'mongodb/mongo-java-driver'
+            display_name: 'Java'
+          - name: 'nodejs'
+            repo: 'mongodb/node-mongodb-native'
+            display_name: 'Node.js'
+          - name: 'php'
+            repo: 'mongodb/mongo-php-driver'
+            display_name: 'PHP'
+          - name: 'python'
+            repo: 'mongodb/mongo-python-driver'
+            display_name: 'Python'
+          - name: 'ruby'
+            repo: 'mongodb/mongo-ruby-driver'
+            display_name: 'Ruby'
+          - name: 'rust'
+            repo: 'mongodb/mongo-rust-driver'
+            display_name: 'Rust'
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Skip driver if specified in input
+      if: github.event.inputs.driver != 'all' && github.event.inputs.driver != matrix.driver.name
+      run: |
+        echo "Skipping ${{ matrix.driver.name }} driver (only updating ${{ github.event.inputs.driver }})"
+        exit 0
+
+    - name: Create update script
+      run: |
+        cat > update_driver.js << 'EOF'
+        const fs = require('fs');
+        const https = require('https');
+
+        // Configuration
+        const DRIVER_NAME = process.env.DRIVER_NAME;
+        const DRIVER_DISPLAY_NAME = process.env.DRIVER_DISPLAY_NAME;
+        const REPO_NAME = process.env.REPO_NAME;
+        const FORCE_RECREATE = process.env.FORCE_RECREATE === 'true';
+        const DATA_FILE = `data/${DRIVER_NAME}.json`;
+
+        console.log(`Updating ${DRIVER_DISPLAY_NAME} driver data...`);
+        console.log(`Repository: ${REPO_NAME}`);
+        console.log(`Force recreate: ${FORCE_RECREATE}`);
+
+        // Helper function to make HTTP requests
+        function httpsGet(url) {
+          return new Promise((resolve, reject) => {
+            const options = {
+              headers: {
+                'User-Agent': 'MongoDB-Driver-Compatibility-Checker',
+                'Accept': 'application/vnd.github.v3+json'
+              }
+            };
+
+            https.get(url, options, (res) => {
+              let data = '';
+              res.on('data', chunk => data += chunk);
+              res.on('end', () => {
+                if (res.statusCode === 200) {
+                  try {
+                    resolve(JSON.parse(data));
+                  } catch (e) {
+                    reject(new Error(`Failed to parse JSON: ${e.message}`));
+                  }
+                } else {
+                  reject(new Error(`HTTP ${res.statusCode}: ${data}`));
+                }
+              });
+            }).on('error', reject);
+          });
+        }
+
+        // Function to get all releases from GitHub API
+        async function getAllReleases() {
+          console.log('Fetching releases from GitHub API...');
+          let allReleases = [];
+          let page = 1;
+          const perPage = 100;
+
+          while (true) {
+            const url = `https://api.github.com/repos/${REPO_NAME}/releases?page=${page}&per_page=${perPage}`;
+            console.log(`Fetching page ${page}...`);
+
+            try {
+              const releases = await httpsGet(url);
+              if (releases.length === 0) break;
+
+              allReleases = allReleases.concat(releases);
+              page++;
+
+              // Rate limiting - wait 1 second between requests
+              await new Promise(resolve => setTimeout(resolve, 1000));
+            } catch (error) {
+              console.error(`Error fetching page ${page}:`, error.message);
+              break;
+            }
+          }
+
+          console.log(`Found ${allReleases.length} total releases`);
+          return allReleases;
+        }
+
+        // Function to filter and format releases
+        function processReleases(releases) {
+          return releases
+            .filter(release => !release.prerelease && !release.draft)
+            .map(release => ({
+              version: release.tag_name.replace(/^[v]/, ''), // Remove 'v' prefix if present
+              releaseDate: release.published_at.split('T')[0] // Extract date part
+            }))
+            .filter(release => {
+              // Basic semver validation
+              const semverRegex = /^\d+\.\d+\.\d+/;
+              return semverRegex.test(release.version);
+            })
+            .sort((a, b) => {
+              // Sort by version (newest first)
+              const parseVersion = (v) => v.split('.').map(n => parseInt(n, 10));
+              const aVer = parseVersion(a.version);
+              const bVer = parseVersion(b.version);
+
+              for (let i = 0; i < Math.max(aVer.length, bVer.length); i++) {
+                const aPart = aVer[i] || 0;
+                const bPart = bVer[i] || 0;
+                if (aPart !== bPart) return bPart - aPart;
+              }
+              return 0;
+            });
+        }
+
+        // Main execution
+        async function main() {
+          try {
+            // Read existing data
+            let existingData = {
+              driver: DRIVER_DISPLAY_NAME,
+              repository: `https://github.com/${REPO_NAME}`,
+              versions: []
+            };
+
+            if (fs.existsSync(DATA_FILE) && !FORCE_RECREATE) {
+              const fileContent = fs.readFileSync(DATA_FILE, 'utf8');
+              existingData = JSON.parse(fileContent);
+              console.log(`Existing data has ${existingData.versions.length} versions`);
+              console.log(`Latest existing version: ${existingData.versions[0]?.version || 'none'}`);
+            }
+
+            // Fetch releases from GitHub
+            const releases = await getAllReleases();
+            const processedReleases = processReleases(releases);
+
+            if (processedReleases.length === 0) {
+              console.log('No valid releases found');
+              process.exit(0);
+            }
+
+            console.log(`Processed ${processedReleases.length} valid releases`);
+            console.log(`Latest release: ${processedReleases[0].version} (${processedReleases[0].releaseDate})`);
+
+            // Check if update is needed
+            if (!FORCE_RECREATE && existingData.versions.length > 0) {
+              const latestExisting = existingData.versions[0].version;
+              const latestNew = processedReleases[0].version;
+
+              if (latestExisting === latestNew) {
+                console.log('No new releases found. Data is up to date.');
+                process.exit(0);
+              }
+
+              console.log(`New release found: ${latestNew} (latest existing: ${latestExisting})`);
+
+              // Merge new releases with existing ones, avoiding duplicates
+              const existingVersions = new Set(existingData.versions.map(v => v.version));
+              const newReleases = processedReleases.filter(r => !existingVersions.has(r.version));
+
+              console.log(`Adding ${newReleases.length} new releases`);
+
+              // Combine and re-sort
+              const allVersions = [...newReleases, ...existingData.versions];
+              existingData.versions = allVersions.sort((a, b) => {
+                const parseVersion = (v) => v.split('.').map(n => parseInt(n, 10));
+                const aVer = parseVersion(a.version);
+                const bVer = parseVersion(b.version);
+
+                for (let i = 0; i < Math.max(aVer.length, bVer.length); i++) {
+                  const aPart = aVer[i] || 0;
+                  const bPart = bVer[i] || 0;
+                  if (aPart !== bPart) return bPart - aPart;
+                }
+                return 0;
+              });
+            } else {
+              console.log(FORCE_RECREATE ? 'Force recreating data file...' : 'Creating new data file...');
+              existingData.versions = processedReleases;
+            }
+
+            // Limit to most recent 50 versions to keep file size reasonable
+            if (existingData.versions.length > 50) {
+              console.log(`Limiting to most recent 50 versions (was ${existingData.versions.length})`);
+              existingData.versions = existingData.versions.slice(0, 50);
+            }
+
+            // Write updated data
+            fs.writeFileSync(DATA_FILE, JSON.stringify(existingData, null, 2) + '\n');
+            console.log(`✅ Updated ${DATA_FILE} with ${existingData.versions.length} versions`);
+            console.log(`Latest version: ${existingData.versions[0].version} (${existingData.versions[0].releaseDate})`);
+
+            // Set output for GitHub Actions
+            console.log(`::set-output name=updated::true`);
+            console.log(`::set-output name=latest_version::${existingData.versions[0].version}`);
+            console.log(`::set-output name=total_versions::${existingData.versions.length}`);
+
+          } catch (error) {
+            console.error('❌ Error:', error.message);
+            process.exit(1);
+          }
+        }
+
+        main();
+        EOF
+
+    - name: Update driver data
+      id: update
+      env:
+        DRIVER_NAME: ${{ matrix.driver.name }}
+        DRIVER_DISPLAY_NAME: ${{ matrix.driver.display_name }}
+        REPO_NAME: ${{ matrix.driver.repo }}
+        FORCE_RECREATE: ${{ github.event.inputs.force_recreate }}
+      run: node update_driver.js
+
+    - name: Check for changes
+      id: check_changes
+      run: |
+        if git diff --quiet data/${{ matrix.driver.name }}.json; then
+          echo "No changes detected"
+          echo "has_changes=false" >> $GITHUB_OUTPUT
+        else
+          echo "Changes detected"
+          echo "has_changes=true" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Commit and push changes
+      if: steps.check_changes.outputs.has_changes == 'true'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add data/${{ matrix.driver.name }}.json
+        git commit -m "🔄 Update ${{ matrix.driver.display_name }} driver data
+
+        - Latest version: ${{ steps.update.outputs.latest_version }}
+        - Total versions: ${{ steps.update.outputs.total_versions }}
+        - Updated: $(date -u +'%Y-%m-%d %H:%M:%S UTC')
+
+        Auto-updated by GitHub Actions from ${{ matrix.driver.repo }}"
+        git push
+
+    - name: Create summary
+      if: always()
+      run: |
+        echo "## 🔄 Driver Update Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Driver:** ${{ matrix.driver.display_name }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Repository:** https://github.com/${{ matrix.driver.repo }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Force Recreate:** ${{ github.event.inputs.force_recreate }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+        if [ "${{ steps.check_changes.outputs.has_changes }}" == "true" ]; then
+          echo "✅ **Status:** Updated successfully" >> $GITHUB_STEP_SUMMARY
+          echo "**Latest Version:** ${{ steps.update.outputs.latest_version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Total Versions:** ${{ steps.update.outputs.total_versions }}" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "ℹ️ **Status:** No updates needed (already up to date)" >> $GITHUB_STEP_SUMMARY
+        fi

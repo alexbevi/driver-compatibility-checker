@@ -1,0 +1,43 @@
+name: Update Ruby Driver
+
+on:
+  schedule:
+    # Run daily at staggered times
+    - cron: '0 5 * * *'
+  
+  workflow_dispatch:
+    inputs:
+      force_recreate:
+        description: 'Force recreate JSON file with all releases'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  update-ruby:
+    uses: ./.github/workflows/update-single-driver.yml
+    with:
+      driver_name: 'ruby'
+      driver_display_name: 'Ruby'
+      repo_name: 'mongodb/mongo-ruby-driver'
+      force_recreate: ${{ github.event.inputs.force_recreate == true }}
+    secrets: inherit
+    
+  notify:
+    needs: update-ruby
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+    - name: Create summary
+      run: |
+        echo "## 🔄 Ruby Driver Update Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Repository:** https://github.com/mongodb/mongo-ruby-driver" >> $GITHUB_STEP_SUMMARY
+        echo "**Force Recreate:** ${{ github.event.inputs.force_recreate }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if [ "${{ needs.update-ruby.result }}" == "success" ]; then
+          echo "✅ **Status:** Workflow completed successfully" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ **Status:** Workflow failed or was cancelled" >> $GITHUB_STEP_SUMMARY
+        fi

@@ -1,0 +1,43 @@
+name: Update C++ Driver
+
+on:
+  schedule:
+    # Run daily at staggered times
+    - cron: '30 1 * * *'
+  
+  workflow_dispatch:
+    inputs:
+      force_recreate:
+        description: 'Force recreate JSON file with all releases'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  update-cpp:
+    uses: ./.github/workflows/update-single-driver.yml
+    with:
+      driver_name: 'cpp'
+      driver_display_name: 'C++'
+      repo_name: 'mongodb/mongo-cxx-driver'
+      force_recreate: ${{ github.event.inputs.force_recreate == true }}
+    secrets: inherit
+    
+  notify:
+    needs: update-cpp
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+    - name: Create summary
+      run: |
+        echo "## 🔄 C++ Driver Update Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Repository:** https://github.com/mongodb/mongo-cxx-driver" >> $GITHUB_STEP_SUMMARY
+        echo "**Force Recreate:** ${{ github.event.inputs.force_recreate }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if [ "${{ needs.update-cpp.result }}" == "success" ]; then
+          echo "✅ **Status:** Workflow completed successfully" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ **Status:** Workflow failed or was cancelled" >> $GITHUB_STEP_SUMMARY
+        fi

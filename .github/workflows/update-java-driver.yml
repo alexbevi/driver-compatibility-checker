@@ -1,0 +1,43 @@
+name: Update Java Driver
+
+on:
+  schedule:
+    # Run daily at staggered times
+    - cron: '0 3 * * *'
+  
+  workflow_dispatch:
+    inputs:
+      force_recreate:
+        description: 'Force recreate JSON file with all releases'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  update-java:
+    uses: ./.github/workflows/update-single-driver.yml
+    with:
+      driver_name: 'java'
+      driver_display_name: 'Java'
+      repo_name: 'mongodb/mongo-java-driver'
+      force_recreate: ${{ github.event.inputs.force_recreate == true }}
+    secrets: inherit
+    
+  notify:
+    needs: update-java
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+    - name: Create summary
+      run: |
+        echo "## 🔄 Java Driver Update Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Repository:** https://github.com/mongodb/mongo-java-driver" >> $GITHUB_STEP_SUMMARY
+        echo "**Force Recreate:** ${{ github.event.inputs.force_recreate }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if [ "${{ needs.update-java.result }}" == "success" ]; then
+          echo "✅ **Status:** Workflow completed successfully" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ **Status:** Workflow failed or was cancelled" >> $GITHUB_STEP_SUMMARY
+        fi

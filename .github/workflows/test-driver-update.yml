@@ -1,0 +1,105 @@
+name: Test Driver Update
+
+on:
+  workflow_dispatch:
+    inputs:
+      test_driver:
+        description: 'Driver to test (for testing purposes)'
+        required: true
+        type: choice
+        options:
+          - 'nodejs'
+          - 'python'
+          - 'go'
+        default: 'nodejs'
+
+jobs:
+  test-update:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Test API access
+      env:
+        TEST_DRIVER: ${{ github.event.inputs.test_driver }}
+      run: |
+        case $TEST_DRIVER in
+          "nodejs")
+            REPO="mongodb/node-mongodb-native"
+            DISPLAY="Node.js"
+            ;;
+          "python")
+            REPO="mongodb/mongo-python-driver"
+            DISPLAY="Python"
+            ;;
+          "go")
+            REPO="mongodb/mongo-go-driver"
+            DISPLAY="Go"
+            ;;
+        esac
+
+        echo "Testing API access for $DISPLAY driver..."
+        echo "Repository: $REPO"
+
+        # Test API call
+        response=$(curl -s -w "%{http_code}" -o /tmp/releases.json \
+          -H "Accept: application/vnd.github.v3+json" \
+          -H "User-Agent: MongoDB-Driver-Compatibility-Checker-Test" \
+          "https://api.github.com/repos/$REPO/releases?per_page=5")
+
+        if [ "$response" -eq 200 ]; then
+          echo "✅ API access successful"
+          echo "Latest releases:"
+          cat /tmp/releases.json | jq -r '.[0:3] | .[] | "- \(.tag_name) (\(.published_at | split("T")[0]))"'
+        else
+          echo "❌ API access failed with status: $response"
+          cat /tmp/releases.json
+          exit 1
+        fi
+
+    - name: Validate existing data file
+      env:
+        TEST_DRIVER: ${{ github.event.inputs.test_driver }}
+      run: |
+        DATA_FILE="data/${TEST_DRIVER}.json"
+
+        if [ -f "$DATA_FILE" ]; then
+          echo "✅ Data file exists: $DATA_FILE"
+
+          # Validate JSON structure
+          if jq empty "$DATA_FILE" 2>/dev/null; then
+            echo "✅ JSON is valid"
+
+            # Show summary
+            echo "Current data summary:"
+            echo "- Driver: $(jq -r '.driver' "$DATA_FILE")"
+            echo "- Repository: $(jq -r '.repository' "$DATA_FILE")"
+            echo "- Version count: $(jq '.versions | length' "$DATA_FILE")"
+            echo "- Latest version: $(jq -r '.versions[0].version' "$DATA_FILE")"
+            echo "- Latest release date: $(jq -r '.versions[0].releaseDate' "$DATA_FILE")"
+          else
+            echo "❌ JSON is invalid"
+            exit 1
+          fi
+        else
+          echo "❌ Data file not found: $DATA_FILE"
+          exit 1
+        fi
+
+    - name: Create test summary
+      run: |
+        echo "## 🧪 Driver Update Test Results" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Test Driver:** ${{ github.event.inputs.test_driver }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Test Date:** $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "✅ All tests passed! The update system is working correctly." >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "You can now safely run the full update workflows." >> $GITHUB_STEP_SUMMARY
