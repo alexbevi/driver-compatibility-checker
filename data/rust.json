@@ -1,0 +1,29 @@
+{
+  "driver": "Rust",
+  "repository": "https://github.com/mongodb/mongo-rust-driver",
+  "versions": [
+    { "version": "3.2.4", "releaseDate": "2025-06-30" },
+    { "version": "3.2.3", "releaseDate": "2025-03-19" },
+    { "version": "3.2.2", "releaseDate": "2025-03-06" },
+    { "version": "3.2.1", "releaseDate": "2025-02-04" },
+    { "version": "3.2.0", "releaseDate": "2025-01-16" },
+    { "version": "3.1.1", "releaseDate": "2024-12-12" },
+    { "version": "3.1.0", "releaseDate": "2024-08-30" },
+    { "version": "3.0.1", "releaseDate": "2024-07-09" },
+    { "version": "3.0.0", "releaseDate": "2024-06-25" },
+    { "version": "2.8.2", "releaseDate": "2024-03-15" },
+    { "version": "2.8.1", "releaseDate": "2024-02-09" },
+    { "version": "2.8.0", "releaseDate": "2023-12-11" },
+    { "version": "2.7.1", "releaseDate": "2023-11-01" },
+    { "version": "2.7.0", "releaseDate": "2023-09-27" },
+    { "version": "2.6.1", "releaseDate": "2023-08-15" },
+    { "version": "2.6.0", "releaseDate": "2023-06-22" },
+    { "version": "2.5.0", "releaseDate": "2023-04-19" },
+    { "version": "2.4.0", "releaseDate": "2023-03-01" },
+    { "version": "2.3.1", "releaseDate": "2022-10-03" },
+    { "version": "2.3.0", "releaseDate": "2022-07-18" },
+    { "version": "2.2.2", "releaseDate": "2022-06-03" },
+    { "version": "2.2.1", "releaseDate": "2022-04-22" },
+    { "version": "2.2.0", "releaseDate": "2022-04-14" }
+  ]
+}
