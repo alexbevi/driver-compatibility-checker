@@ -1,5 +1,688 @@
 {
   "driver": "Java",
   "repository": "https://github.com/mongodb/mongo-java-driver",
-  "versions": []
+  "versions": [
+    {
+      "version": "5.5.1",
+      "releaseDate": "2025-06-09",
+      "originalTag": "r5.5.1"
+    },
+    {
+      "version": "5.5.0",
+      "releaseDate": "2025-05-07",
+      "originalTag": "r5.5.0"
+    },
+    {
+      "version": "5.4.0",
+      "releaseDate": "2025-03-26",
+      "originalTag": "r5.4.0"
+    },
+    {
+      "version": "5.3.1",
+      "releaseDate": "2025-01-23",
+      "originalTag": "r5.3.1"
+    },
+    {
+      "version": "5.3.0",
+      "releaseDate": "2025-01-21",
+      "originalTag": "r5.3.0"
+    },
+    {
+      "version": "5.2.1",
+      "releaseDate": "2024-11-15",
+      "originalTag": "r5.2.1"
+    },
+    {
+      "version": "5.2.0",
+      "releaseDate": "2024-09-26",
+      "originalTag": "r5.2.0"
+    },
+    {
+      "version": "5.1.4",
+      "releaseDate": "2024-09-04",
+      "originalTag": "r5.1.4"
+    },
+    {
+      "version": "5.1.3",
+      "releaseDate": "2024-09-04",
+      "originalTag": "r5.1.3"
+    },
+    {
+      "version": "5.1.2",
+      "releaseDate": "2024-07-10",
+      "originalTag": "r5.1.2"
+    },
+    {
+      "version": "5.1.1",
+      "releaseDate": "2024-06-14",
+      "originalTag": "r5.1.1"
+    },
+    {
+      "version": "5.1.0",
+      "releaseDate": "2024-05-02",
+      "originalTag": "r5.1.0"
+    },
+    {
+      "version": "5.0.1",
+      "releaseDate": "2024-04-03",
+      "originalTag": "r5.0.1"
+    },
+    {
+      "version": "5.0.0",
+      "releaseDate": "2024-03-01",
+      "originalTag": "r5.0.0"
+    },
+    {
+      "version": "4.11.5",
+      "releaseDate": "2024-11-15",
+      "originalTag": "r4.11.5"
+    },
+    {
+      "version": "4.11.4",
+      "releaseDate": "2024-09-06",
+      "originalTag": "r4.11.4"
+    },
+    {
+      "version": "4.11.2",
+      "releaseDate": "2024-04-03",
+      "originalTag": "r4.11.2"
+    },
+    {
+      "version": "4.11.1",
+      "releaseDate": "2024-02-20",
+      "originalTag": "r4.11.1"
+    },
+    {
+      "version": "4.11.0",
+      "releaseDate": "2023-11-07",
+      "originalTag": "r4.11.0"
+    },
+    {
+      "version": "4.10.2",
+      "releaseDate": "2023-07-11",
+      "originalTag": "r4.10.2"
+    },
+    {
+      "version": "4.10.1",
+      "releaseDate": "2023-07-11",
+      "originalTag": "r4.10.1"
+    },
+    {
+      "version": "4.10.0",
+      "releaseDate": "2023-07-11",
+      "originalTag": "r4.10.0"
+    },
+    {
+      "version": "4.9.0",
+      "releaseDate": "2023-02-13",
+      "originalTag": "r4.9.0"
+    },
+    {
+      "version": "4.8.2",
+      "releaseDate": "2023-01-12",
+      "originalTag": "r4.8.2"
+    },
+    {
+      "version": "4.8.1",
+      "releaseDate": "2022-12-07",
+      "originalTag": "r4.8.1"
+    },
+    {
+      "version": "4.8.0",
+      "releaseDate": "2022-12-02",
+      "originalTag": "r4.8.0"
+    },
+    {
+      "version": "4.7.2",
+      "releaseDate": "2022-10-10",
+      "originalTag": "r4.7.2"
+    },
+    {
+      "version": "4.7.1",
+      "releaseDate": "2022-08-21",
+      "originalTag": "r4.7.1"
+    },
+    {
+      "version": "4.7.0",
+      "releaseDate": "2022-07-20",
+      "originalTag": "r4.7.0"
+    },
+    {
+      "version": "4.6.1",
+      "releaseDate": "2022-06-09",
+      "originalTag": "r4.6.1"
+    },
+    {
+      "version": "4.6.0",
+      "releaseDate": "2022-04-26",
+      "originalTag": "r4.6.0"
+    },
+    {
+      "version": "4.5.1",
+      "releaseDate": "2022-04-04",
+      "originalTag": "r4.5.1"
+    },
+    {
+      "version": "4.5.0",
+      "releaseDate": "2022-02-11",
+      "originalTag": "r4.5.0"
+    },
+    {
+      "version": "4.4.2",
+      "releaseDate": "2022-02-08",
+      "originalTag": "r4.4.2"
+    },
+    {
+      "version": "4.4.1",
+      "releaseDate": "2022-01-06",
+      "originalTag": "r4.4.1"
+    },
+    {
+      "version": "4.3.4",
+      "releaseDate": "2021-11-09",
+      "originalTag": "r4.3.4"
+    },
+    {
+      "version": "4.3.3",
+      "releaseDate": "2021-10-06",
+      "originalTag": "r4.3.3"
+    },
+    {
+      "version": "4.3.2",
+      "releaseDate": "2021-10-06",
+      "originalTag": "r4.3.2"
+    },
+    {
+      "version": "4.3.1",
+      "releaseDate": "2021-08-03",
+      "originalTag": "r4.3.1"
+    },
+    {
+      "version": "4.3.0",
+      "releaseDate": "2021-07-13",
+      "originalTag": "r4.3.0"
+    },
+    {
+      "version": "4.2.3",
+      "releaseDate": "2021-04-07",
+      "originalTag": "r4.2.3"
+    },
+    {
+      "version": "4.2.2",
+      "releaseDate": "2021-03-02",
+      "originalTag": "r4.2.2"
+    },
+    {
+      "version": "4.2.1",
+      "releaseDate": "2021-02-18",
+      "originalTag": "r4.2.1"
+    },
+    {
+      "version": "4.2.0",
+      "releaseDate": "2021-02-18",
+      "originalTag": "r4.2.0"
+    },
+    {
+      "version": "4.1.2",
+      "releaseDate": "2021-02-18",
+      "originalTag": "r4.1.2"
+    },
+    {
+      "version": "4.1.1",
+      "releaseDate": "2021-02-18",
+      "originalTag": "r4.1.1"
+    },
+    {
+      "version": "4.1.0",
+      "releaseDate": "2020-07-30",
+      "originalTag": "r4.1.0"
+    },
+    {
+      "version": "4.0.6",
+      "releaseDate": "2021-02-18",
+      "originalTag": "r4.0.6"
+    },
+    {
+      "version": "4.0.5",
+      "releaseDate": "2020-07-08",
+      "originalTag": "r4.0.5"
+    },
+    {
+      "version": "4.0.4",
+      "releaseDate": "2020-06-02",
+      "originalTag": "r4.0.4"
+    },
+    {
+      "version": "4.0.3",
+      "releaseDate": "2020-05-11",
+      "originalTag": "r4.0.3"
+    },
+    {
+      "version": "4.0.2",
+      "releaseDate": "2020-04-07",
+      "originalTag": "r4.0.2"
+    },
+    {
+      "version": "4.0.1",
+      "releaseDate": "2020-03-20",
+      "originalTag": "r4.0.1"
+    },
+    {
+      "version": "4.0.0",
+      "releaseDate": "2020-03-05",
+      "originalTag": "r4.0.0"
+    },
+    {
+      "version": "3.12.12",
+      "releaseDate": "2023-02-07",
+      "originalTag": "r3.12.12"
+    },
+    {
+      "version": "3.12.11",
+      "releaseDate": "2022-04-22",
+      "originalTag": "r3.12.11"
+    },
+    {
+      "version": "3.12.8",
+      "releaseDate": "2021-02-18",
+      "originalTag": "r3.12.8"
+    },
+    {
+      "version": "3.12.6",
+      "releaseDate": "2020-07-08",
+      "originalTag": "r3.12.6"
+    },
+    {
+      "version": "3.12.5",
+      "releaseDate": "2020-06-02",
+      "originalTag": "r3.12.5"
+    },
+    {
+      "version": "3.12.4",
+      "releaseDate": "2020-05-11",
+      "originalTag": "r3.12.4"
+    },
+    {
+      "version": "3.12.3",
+      "releaseDate": "2020-04-07",
+      "originalTag": "r3.12.3"
+    },
+    {
+      "version": "3.12.2",
+      "releaseDate": "2020-03-04",
+      "originalTag": "r3.12.2"
+    },
+    {
+      "version": "3.12.1",
+      "releaseDate": "2020-01-17",
+      "originalTag": "r3.12.1"
+    },
+    {
+      "version": "3.12.0",
+      "releaseDate": "2019-12-10",
+      "originalTag": "r3.12.0"
+    },
+    {
+      "version": "3.11.3",
+      "releaseDate": "2021-02-18",
+      "originalTag": "r3.11.3"
+    },
+    {
+      "version": "3.11.2",
+      "releaseDate": "2019-11-05",
+      "originalTag": "r3.11.2"
+    },
+    {
+      "version": "3.11.1",
+      "releaseDate": "2019-10-14",
+      "originalTag": "r3.11.1"
+    },
+    {
+      "version": "3.11.0",
+      "releaseDate": "2019-08-13",
+      "originalTag": "r3.11.0"
+    },
+    {
+      "version": "3.10.2",
+      "releaseDate": "2019-04-08",
+      "originalTag": "r3.10.2"
+    },
+    {
+      "version": "3.10.1",
+      "releaseDate": "2019-02-11",
+      "originalTag": "r3.10.1"
+    },
+    {
+      "version": "3.10.0",
+      "releaseDate": "2019-02-05",
+      "originalTag": "r3.10.0"
+    },
+    {
+      "version": "3.9.1",
+      "releaseDate": "2018-11-27",
+      "originalTag": "r3.9.1"
+    },
+    {
+      "version": "3.9.0",
+      "releaseDate": "2018-11-07",
+      "originalTag": "r3.9.0"
+    },
+    {
+      "version": "3.8.2",
+      "releaseDate": "2018-09-19",
+      "originalTag": "r3.8.2"
+    },
+    {
+      "version": "3.8.1",
+      "releaseDate": "2018-08-20",
+      "originalTag": "r3.8.1"
+    },
+    {
+      "version": "3.8.0",
+      "releaseDate": "2018-06-27",
+      "originalTag": "r3.8.0"
+    },
+    {
+      "version": "3.7.1",
+      "releaseDate": "2018-05-29",
+      "originalTag": "r3.7.1"
+    },
+    {
+      "version": "3.7.0",
+      "releaseDate": "2018-05-02",
+      "originalTag": "r3.7.0"
+    },
+    {
+      "version": "3.6.4",
+      "releaseDate": "2018-05-29",
+      "originalTag": "r3.6.4"
+    },
+    {
+      "version": "3.6.3",
+      "releaseDate": "2018-02-13",
+      "originalTag": "r3.6.3"
+    },
+    {
+      "version": "3.6.2",
+      "releaseDate": "2018-02-02",
+      "originalTag": "r3.6.2"
+    },
+    {
+      "version": "3.6.1",
+      "releaseDate": "2017-12-21",
+      "originalTag": "r3.6.1"
+    },
+    {
+      "version": "3.6.0",
+      "releaseDate": "2017-12-05",
+      "originalTag": "r3.6.0"
+    },
+    {
+      "version": "3.5.0",
+      "releaseDate": "2017-08-03",
+      "originalTag": "r3.5.0"
+    },
+    {
+      "version": "3.4.3",
+      "releaseDate": "2017-08-02",
+      "originalTag": "r3.4.3"
+    },
+    {
+      "version": "3.4.2",
+      "releaseDate": "2017-01-26",
+      "originalTag": "r3.4.2"
+    },
+    {
+      "version": "3.4.1",
+      "releaseDate": "2016-12-19",
+      "originalTag": "r3.4.1"
+    },
+    {
+      "version": "3.4.0",
+      "releaseDate": "2016-11-29",
+      "originalTag": "r3.4.0"
+    },
+    {
+      "version": "3.3.0",
+      "releaseDate": "2016-07-18",
+      "originalTag": "r3.3.0"
+    },
+    {
+      "version": "3.2.2",
+      "releaseDate": "2016-02-16",
+      "originalTag": "r3.2.2"
+    },
+    {
+      "version": "3.2.1",
+      "releaseDate": "2016-01-13",
+      "originalTag": "r3.2.1"
+    },
+    {
+      "version": "3.2.0",
+      "releaseDate": "2015-11-16",
+      "originalTag": "r3.2.0"
+    },
+    {
+      "version": "3.1.1",
+      "releaseDate": "2015-11-12",
+      "originalTag": "r3.1.1"
+    },
+    {
+      "version": "3.1.0",
+      "releaseDate": "2015-10-07",
+      "originalTag": "r3.1.0"
+    },
+    {
+      "version": "3.0.4",
+      "releaseDate": "2015-09-14",
+      "originalTag": "r3.0.4"
+    },
+    {
+      "version": "3.0.3",
+      "releaseDate": "2015-07-16",
+      "originalTag": "r3.0.3"
+    },
+    {
+      "version": "3.0.2",
+      "releaseDate": "2015-05-28",
+      "originalTag": "r3.0.2"
+    },
+    {
+      "version": "3.0.1",
+      "releaseDate": "2015-05-05",
+      "originalTag": "r3.0.1"
+    },
+    {
+      "version": "3.0.0",
+      "releaseDate": "2015-03-31",
+      "originalTag": "r3.0.0"
+    },
+    {
+      "version": "2.14.3",
+      "releaseDate": "2016-07-18",
+      "originalTag": "r2.14.3"
+    },
+    {
+      "version": "2.14.2",
+      "releaseDate": "2016-03-31",
+      "originalTag": "r2.14.2"
+    },
+    {
+      "version": "2.14.1",
+      "releaseDate": "2016-01-13",
+      "originalTag": "r2.14.1"
+    },
+    {
+      "version": "2.14.0",
+      "releaseDate": "2015-11-16",
+      "originalTag": "r2.14.0"
+    },
+    {
+      "version": "2.13.3",
+      "releaseDate": "2015-09-08",
+      "originalTag": "r2.13.3"
+    },
+    {
+      "version": "2.13.2",
+      "releaseDate": "2015-05-28",
+      "originalTag": "r2.13.2"
+    },
+    {
+      "version": "2.13.1",
+      "releaseDate": "2015-04-13",
+      "originalTag": "r2.13.1"
+    },
+    {
+      "version": "2.13.0",
+      "releaseDate": "2015-01-29",
+      "originalTag": "r2.13.0"
+    },
+    {
+      "version": "2.12.5",
+      "releaseDate": "2015-01-15",
+      "originalTag": "r2.12.5"
+    },
+    {
+      "version": "2.12.4",
+      "releaseDate": "2014-10-15",
+      "originalTag": "r2.12.4"
+    },
+    {
+      "version": "2.12.3",
+      "releaseDate": "2014-07-21",
+      "originalTag": "r2.12.3"
+    },
+    {
+      "version": "2.12.2",
+      "releaseDate": "2014-05-20",
+      "originalTag": "r2.12.2"
+    },
+    {
+      "version": "2.12.1",
+      "releaseDate": "2014-04-29",
+      "originalTag": "r2.12.1"
+    },
+    {
+      "version": "2.12.0",
+      "releaseDate": "2014-04-03",
+      "originalTag": "r2.12.0"
+    },
+    {
+      "version": "2.11.4",
+      "releaseDate": "2014-01-27",
+      "originalTag": "r2.11.4"
+    },
+    {
+      "version": "2.11.3",
+      "releaseDate": "2013-09-12",
+      "originalTag": "r2.11.3"
+    },
+    {
+      "version": "2.11.2",
+      "releaseDate": "2013-09-13",
+      "originalTag": "r2.11.2"
+    },
+    {
+      "version": "2.11.1",
+      "releaseDate": "2013-09-13",
+      "originalTag": "r2.11.1"
+    },
+    {
+      "version": "2.11.0",
+      "releaseDate": "2013-09-13",
+      "originalTag": "r2.11.0"
+    },
+    {
+      "version": "2.10.1",
+      "releaseDate": "2013-09-13",
+      "originalTag": "r2.10.1"
+    },
+    {
+      "version": "2.10.0",
+      "releaseDate": "2013-09-13",
+      "originalTag": "r2.10.0"
+    },
+    {
+      "version": "2.9.3",
+      "releaseDate": "2013-09-13",
+      "originalTag": "r2.9.3"
+    },
+    {
+      "version": "2.9.2",
+      "releaseDate": "2013-09-13",
+      "originalTag": "r2.9.2"
+    },
+    {
+      "version": "2.9.1",
+      "releaseDate": "2013-09-13",
+      "originalTag": "r2.9.1"
+    },
+    {
+      "version": "2.9.0",
+      "releaseDate": "2013-09-13",
+      "originalTag": "r2.9.0"
+    },
+    {
+      "version": "2.8.0",
+      "releaseDate": "2013-09-13",
+      "originalTag": "r2.8.0"
+    },
+    {
+      "version": "2.7.3",
+      "releaseDate": "2013-09-13",
+      "originalTag": "r2.7.3"
+    },
+    {
+      "version": "2.7.2",
+      "releaseDate": "2013-09-13",
+      "originalTag": "r2.7.2"
+    },
+    {
+      "version": "2.7.0",
+      "releaseDate": "2013-09-13",
+      "originalTag": "r2.7.0"
+    },
+    {
+      "version": "2.6.5",
+      "releaseDate": "2013-09-13",
+      "originalTag": "r2.6.5"
+    },
+    {
+      "version": "2.6.4",
+      "releaseDate": "2013-09-13",
+      "originalTag": "r2.6.4"
+    },
+    {
+      "version": "2.6.3",
+      "releaseDate": "2013-09-13",
+      "originalTag": "r2.6.3"
+    },
+    {
+      "version": "2.6.2",
+      "releaseDate": "2013-09-13",
+      "originalTag": "r2.6.2"
+    },
+    {
+      "version": "2.6.1",
+      "releaseDate": "2013-09-13",
+      "originalTag": "r2.6.1"
+    },
+    {
+      "version": "2.5.3",
+      "releaseDate": "2013-09-13",
+      "originalTag": "r2.5.3"
+    },
+    {
+      "version": "2.5.2",
+      "releaseDate": "2013-09-13",
+      "originalTag": "r2.5.2"
+    },
+    {
+      "version": "2.5.1",
+      "releaseDate": "2013-09-13",
+      "originalTag": "r2.5.1"
+    }
+  ],
+  "lastUpdated": "2025-08-08T17:04:13.533Z",
+  "forceRecreated": true
 }
