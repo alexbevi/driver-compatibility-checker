@@ -54,10 +54,18 @@ jobs:
         const REPO_NAME = process.env.REPO_NAME;
         const FORCE_RECREATE = process.env.FORCE_RECREATE === 'true';
         const DATA_FILE = `data/${DRIVER_NAME}.json`;
+        const GITHUB_OUTPUT = process.env.GITHUB_OUTPUT;
 
         console.log(`Updating ${DRIVER_DISPLAY_NAME} driver data...`);
         console.log(`Repository: ${REPO_NAME}`);
         console.log(`Force recreate: ${FORCE_RECREATE}`);
+
+        // Helper function to write GitHub Actions output
+        function writeOutput(key, value) {
+          if (GITHUB_OUTPUT) {
+            fs.appendFileSync(GITHUB_OUTPUT, `${key}=${value}\n`);
+          }
+        }
 
         // Helper function to make HTTP requests with retry logic
         function httpsGet(url, retries = 3) {
@@ -272,8 +280,8 @@ jobs:
               console.log(`Latest version: ${existingData.versions[0].version} (${existingData.versions[0].releaseDate})`);
 
               // Set outputs for GitHub Actions
-              process.stdout.write(`latest_version=${existingData.versions[0].version}\n`);
-              process.stdout.write(`total_versions=${existingData.versions.length}\n`);
+              writeOutput('latest_version', existingData.versions[0].version);
+              writeOutput('total_versions', existingData.versions.length);
             } else {
               console.log('ℹ️ No update needed');
             }
@@ -296,7 +304,7 @@ jobs:
         REPO_NAME: ${{ inputs.repo_name }}
         FORCE_RECREATE: ${{ inputs.force_recreate }}
       run: |
-        node update_driver.js >> $GITHUB_OUTPUT
+        node update_driver.js
 
     - name: Check for changes
       id: check_changes
