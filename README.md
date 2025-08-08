@@ -74,12 +74,13 @@ This application provides comprehensive compatibility checking for all major Mon
 
 ## 🔄 Automated Data Updates
 
-This repository includes comprehensive GitHub Actions workflows to automatically keep driver version data up-to-date:
+This repository includes comprehensive GitHub Actions workflows to automatically keep both driver and server version data up-to-date:
 
 ### 🤖 Automation Features
 
-* **🕐 Scheduled Updates** - Individual drivers update daily at staggered times to avoid API rate limits
-* **📦 Bulk Updates** - Weekly comprehensive updates of all drivers
+* **🕐 Scheduled Driver Updates** - Individual drivers update daily at staggered times to avoid API rate limits
+* **📦 Bulk Driver Updates** - Weekly comprehensive updates of all drivers
+* **🗓️ Monthly Server Updates** - MongoDB server versions updated monthly from official support policy
 * **🎯 Selective Updates** - Manual triggers for specific drivers or combinations
 * **🔄 Smart Merging** - Only adds new releases, preserves existing data
 * **⚡ Force Rebuild** - Option to completely recreate data files with all available releases
@@ -88,23 +89,29 @@ This repository includes comprehensive GitHub Actions workflows to automatically
 
 ### 🚀 Manual Triggers
 
-You can manually update driver data anytime:
+You can manually update data anytime:
 
 1. **Single Driver**: Go to Actions → "Update [Language] Driver" → Run workflow
 2. **All Drivers**: Go to Actions → "Update Driver Data" → Run workflow
-3. **Bulk Operations**: Go to Actions → "Bulk Update All Drivers" → Run workflow
-4. **Test System**: Go to Actions → "Test Driver Update" → Run workflow
+3. **Bulk Driver Operations**: Go to Actions → "Bulk Update All Drivers" → Run workflow
+4. **Server Versions**: Go to Actions → "Update MongoDB Server Versions" → Run workflow
+5. **Test System**: Go to Actions → "Test Driver Update" → Run workflow
 
 ### 📈 Data Freshness
 
 - **Individual drivers**: Updated daily at staggered times (1:00-5:30 AM UTC)
-- **Bulk updates**: Weekly on Sundays at 6:00 AM UTC
+- **Bulk driver updates**: Weekly on Sundays at 6:00 AM UTC
+- **Server versions**: Monthly on the 1st at 8:00 AM UTC
 - **Manual updates**: Available anytime via GitHub Actions interface
-- **Version limit**: Each driver maintains up to 100 most recent versions
+- **Version limits**: Each driver maintains up to 100 most recent versions
 
-For detailed workflow documentation, see [`.github/workflows/README.md`](.github/workflows/README.md).
+### 🌐 Data Sources
 
-## 🔄 Updating Driver Data
+- **Driver Versions**: GitHub Releases API from official MongoDB repositories
+- **Server Versions**: MongoDB's [official support policy page](https://www.mongodb.com/legal/support-policy/lifecycles)
+- **Fallback Data**: Built-in fallback data for server versions if web scraping fails
+
+For detailed workflow documentation, see [`.github/workflows/README.md`](.github/workflows/README.md).## 🔄 Updating Driver Data
 
 ## 🔄 Updating Driver Data (Legacy/Manual)
 

@@ -1,0 +1,490 @@
+name: Update MongoDB Server Versions
+
+on:
+  # Run monthly on the 1st at 8 AM UTC
+  schedule:
+    - cron: '0 8 1 * *'
+
+  # Allow manual trigger
+  workflow_dispatch:
+    inputs:
+      force_update:
+        description: 'Force update even if no changes detected'
+        required: false
+        type: boolean
+        default: false
+      backup_existing:
+        description: 'Create backup of existing data before update'
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  update-server-versions:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install dependencies
+      run: |
+        npm install --no-save cheerio puppeteer
+
+    - name: Create backup of existing data
+      if: github.event.inputs.backup_existing != 'false'
+      run: |
+        if [ -f "data/server_versions.json" ]; then
+          cp data/server_versions.json "data/server_versions.backup.$(date +%Y%m%d_%H%M%S).json"
+          echo "✅ Created backup of existing server versions data"
+        fi
+
+    - name: Create update script
+      run: |
+        cat > update_server_versions.js << 'EOF'
+        const fs = require('fs');
+        const https = require('https');
+        const puppeteer = require('puppeteer');
+
+        const FORCE_UPDATE = process.env.FORCE_UPDATE === 'true';
+        const DATA_FILE = 'data/server_versions.json';
+        const SOURCE_URL = 'https://www.mongodb.com/legal/support-policy/lifecycles';
+
+        console.log('🔄 Updating MongoDB server version data...');
+        console.log(`Source: ${SOURCE_URL}`);
+        console.log(`Force update: ${FORCE_UPDATE}`);
+
+        // Helper function to parse dates in various formats
+        function parseDate(dateStr) {
+          if (!dateStr || dateStr.toLowerCase().includes('tbd')) {
+            return 'TBD';
+          }
+
+          // Clean the date string
+          const cleaned = dateStr.trim().replace(/[^\w\s,.-]/g, '');
+
+          // Try different date formats
+          const formats = [
+            // Standard formats
+            /^(\w+)\s+(\d{1,2}),?\s+(\d{4})$/,  // "July 19, 2022" or "July 19 2022"
+            /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/,   // "7/19/2022"
+            /^(\d{4})-(\d{1,2})-(\d{1,2})$/,    // "2022-07-19"
+          ];
+
+          const monthNames = {
+            'january': '01', 'jan': '01',
+            'february': '02', 'feb': '02',
+            'march': '03', 'mar': '03',
+            'april': '04', 'apr': '04',
+            'may': '05',
+            'june': '06', 'jun': '06',
+            'july': '07', 'jul': '07',
+            'august': '08', 'aug': '08',
+            'september': '09', 'sep': '09', 'sept': '09',
+            'october': '10', 'oct': '10',
+            'november': '11', 'nov': '11',
+            'december': '12', 'dec': '12'
+          };
+
+          // Try month day, year format
+          const monthDayYear = cleaned.match(formats[0]);
+          if (monthDayYear) {
+            const [, month, day, year] = monthDayYear;
+            const monthNum = monthNames[month.toLowerCase()];
+            if (monthNum) {
+              return `${year}-${monthNum}-${day.padStart(2, '0')}`;
+            }
+          }
+
+          // Try other formats
+          const mmddyyyy = cleaned.match(formats[1]);
+          if (mmddyyyy) {
+            const [, month, day, year] = mmddyyyy;
+            return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+          }
+
+          const yyyymmdd = cleaned.match(formats[2]);
+          if (yyyymmdd) {
+            return cleaned; // Already in correct format
+          }
+
+          // Try to parse with Date constructor as fallback
+          try {
+            const date = new Date(cleaned);
+            if (!isNaN(date.getTime())) {
+              return date.toISOString().split('T')[0];
+            }
+          } catch (e) {
+            console.warn(`Could not parse date: "${dateStr}" -> "${cleaned}"`);
+          }
+
+          return dateStr; // Return original if can't parse
+        }
+
+        // Function to scrape MongoDB lifecycle page
+        async function scrapeMongoDBLifecycles() {
+          console.log('🌐 Launching browser to scrape MongoDB lifecycle data...');
+
+          const browser = await puppeteer.launch({
+            headless: true,
+            args: [
+              '--no-sandbox',
+              '--disable-setuid-sandbox',
+              '--disable-dev-shm-usage',
+              '--disable-accelerated-2d-canvas',
+              '--no-first-run',
+              '--no-zygote',
+              '--single-process',
+              '--disable-gpu'
+            ]
+          });
+
+          try {
+            const page = await browser.newPage();
+
+            // Set user agent to avoid bot detection
+            await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
+
+            console.log(`📡 Navigating to ${SOURCE_URL}...`);
+            await page.goto(SOURCE_URL, {
+              waitUntil: 'networkidle2',
+              timeout: 30000
+            });
+
+            // Wait for content to load
+            await page.waitForTimeout(3000);
+
+            console.log('🔍 Extracting server version data...');
+
+            // Extract version data from the page
+            const versionData = await page.evaluate(() => {
+              const versions = [];
+
+              // Look for tables containing version information
+              const tables = document.querySelectorAll('table');
+
+              for (const table of tables) {
+                const rows = table.querySelectorAll('tr');
+
+                for (let i = 0; i < rows.length; i++) {
+                  const row = rows[i];
+                  const cells = row.querySelectorAll('td, th');
+
+                  if (cells.length >= 3) {
+                    const cellTexts = Array.from(cells).map(cell =>
+                      cell.textContent.trim().replace(/\s+/g, ' ')
+                    );
+
+                    // Look for patterns that indicate version information
+                    for (let j = 0; j < cellTexts.length; j++) {
+                      const text = cellTexts[j];
+
+                      // Match MongoDB version patterns
+                      const versionMatch = text.match(/(?:MongoDB\s+)?(\d+\.\d+)(?:\.\d+)?/i);
+                      if (versionMatch) {
+                        const version = versionMatch[1];
+
+                        // Look for dates in adjacent cells
+                        let releaseDate = '';
+                        let eolDate = '';
+
+                        // Check surrounding cells for date information
+                        for (let k = Math.max(0, j-2); k < Math.min(cellTexts.length, j+3); k++) {
+                          if (k === j) continue;
+
+                          const cellText = cellTexts[k];
+
+                          // Date patterns
+                          if (cellText.match(/\b\d{4}\b/) &&
+                              (cellText.match(/\b(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\w*\b/i) ||
+                               cellText.match(/\b\d{1,2}\/\d{1,2}\/\d{4}\b/))) {
+
+                            // Determine if it's release date or EOL date based on context
+                            const lowerText = cellText.toLowerCase();
+                            if (lowerText.includes('release') || lowerText.includes('ga') || k < j) {
+                              releaseDate = cellText;
+                            } else if (lowerText.includes('eol') || lowerText.includes('end') || k > j) {
+                              eolDate = cellText;
+                            } else if (!releaseDate) {
+                              releaseDate = cellText;
+                            } else if (!eolDate) {
+                              eolDate = cellText;
+                            }
+                          }
+                        }
+
+                        if (version && (releaseDate || eolDate)) {
+                          versions.push({
+                            version,
+                            releaseDate: releaseDate || 'Unknown',
+                            eolDate: eolDate || 'TBD',
+                            rawData: cellTexts
+                          });
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+
+              // Also try to find version info in divs, sections, etc.
+              const allText = document.body.textContent;
+              const versionMatches = allText.matchAll(/MongoDB\s+(\d+\.\d+)[\s\S]*?(\w+\s+\d{1,2},?\s+\d{4}|\d{1,2}\/\d{1,2}\/\d{4})[\s\S]*?(?:EOL|End of Life)[\s\S]*?(\w+\s+\d{1,2},?\s+\d{4}|\d{1,2}\/\d{1,2}\/\d{4}|TBD)/gi);
+
+              for (const match of versionMatches) {
+                const [, version, releaseDate, eolDate] = match;
+                versions.push({
+                  version,
+                  releaseDate,
+                  eolDate,
+                  source: 'text_extraction'
+                });
+              }
+
+              return versions;
+            });
+
+            console.log(`📊 Found ${versionData.length} version entries from web scraping`);
+            return versionData;
+
+          } finally {
+            await browser.close();
+          }
+        }
+
+        // Fallback: Manual/known version data
+        function getFallbackVersionData() {
+          console.log('📚 Using fallback version data...');
+          return [
+            { version: "8.0", releaseDate: "October 2, 2024", eolDate: "TBD" },
+            { version: "7.0", releaseDate: "August 15, 2023", eolDate: "August 31, 2026" },
+            { version: "6.0", releaseDate: "July 19, 2022", eolDate: "July 31, 2025" },
+            { version: "5.0", releaseDate: "July 13, 2021", eolDate: "October 31, 2024" },
+            { version: "4.4", releaseDate: "July 25, 2020", eolDate: "February 29, 2024" },
+            { version: "4.2", releaseDate: "August 13, 2019", eolDate: "April 30, 2023" },
+            { version: "4.0", releaseDate: "June 26, 2018", eolDate: "April 30, 2022" },
+            { version: "3.6", releaseDate: "November 29, 2017", eolDate: "April 30, 2021" },
+            { version: "3.4", releaseDate: "November 29, 2016", eolDate: "January 31, 2020" },
+            { version: "3.2", releaseDate: "December 8, 2015", eolDate: "September 30, 2018" },
+            { version: "3.0", releaseDate: "March 3, 2015", eolDate: "February 28, 2018" }
+          ];
+        }
+
+        // Main execution
+        async function main() {
+          try {
+            let existingData = [];
+
+            // Read existing data
+            if (fs.existsSync(DATA_FILE)) {
+              const fileContent = fs.readFileSync(DATA_FILE, 'utf8');
+              existingData = JSON.parse(fileContent);
+              console.log(`📖 Existing data has ${existingData.length} server versions`);
+            }
+
+            let versionData = [];
+
+            try {
+              // Try web scraping first
+              versionData = await scrapeMongoDBLifecycles();
+
+              if (versionData.length === 0) {
+                console.log('⚠️ Web scraping returned no data, using fallback...');
+                versionData = getFallbackVersionData();
+              }
+            } catch (error) {
+              console.error('❌ Web scraping failed:', error.message);
+              console.log('📚 Using fallback version data...');
+              versionData = getFallbackVersionData();
+            }
+
+            // Process and clean the data
+            const processedVersions = versionData
+              .map(item => ({
+                version: item.version,
+                releaseDate: parseDate(item.releaseDate),
+                eolDate: parseDate(item.eolDate)
+              }))
+              .filter(item => item.version && item.releaseDate)
+              .sort((a, b) => {
+                // Sort by version number (descending)
+                const aVersion = parseFloat(a.version);
+                const bVersion = parseFloat(b.version);
+                return bVersion - aVersion;
+              });
+
+            // Remove duplicates
+            const uniqueVersions = [];
+            const seenVersions = new Set();
+
+            for (const version of processedVersions) {
+              if (!seenVersions.has(version.version)) {
+                seenVersions.add(version.version);
+                uniqueVersions.push(version);
+              }
+            }
+
+            console.log(`✨ Processed ${uniqueVersions.length} unique server versions`);
+
+            // Check if update is needed
+            if (!FORCE_UPDATE && existingData.length > 0) {
+              const existingVersions = new Set(existingData.map(v => v.version));
+              const newVersions = uniqueVersions.filter(v => !existingVersions.has(v.version));
+
+              if (newVersions.length === 0) {
+                // Check for date updates in existing versions
+                let hasUpdates = false;
+                for (const newVer of uniqueVersions) {
+                  const existing = existingData.find(e => e.version === newVer.version);
+                  if (existing && (existing.releaseDate !== newVer.releaseDate || existing.eolDate !== newVer.eolDate)) {
+                    hasUpdates = true;
+                    break;
+                  }
+                }
+
+                if (!hasUpdates) {
+                  console.log('ℹ️ No new versions or date updates found');
+                  return;
+                }
+              }
+
+              console.log(`🆕 Found ${newVersions.length} new versions and/or date updates`);
+            }
+
+            // Write updated data
+            fs.writeFileSync(DATA_FILE, JSON.stringify(uniqueVersions, null, 2) + '\n');
+            console.log(`✅ Updated ${DATA_FILE} with ${uniqueVersions.length} server versions`);
+
+            // Show latest versions
+            console.log('📋 Latest versions:');
+            uniqueVersions.slice(0, 5).forEach(v => {
+              console.log(`  - MongoDB ${v.version} (released: ${v.releaseDate}, EOL: ${v.eolDate})`);
+            });
+
+          } catch (error) {
+            console.error('❌ Error:', error.message);
+            console.error(error.stack);
+            process.exit(1);
+          }
+        }
+
+        main();
+        EOF
+
+    - name: Update server version data
+      env:
+        FORCE_UPDATE: ${{ github.event.inputs.force_update }}
+      run: node update_server_versions.js
+
+    - name: Check for changes
+      id: check_changes
+      run: |
+        if git diff --quiet data/server_versions.json; then
+          echo "has_changes=false" >> $GITHUB_OUTPUT
+          echo "ℹ️ No changes detected in server versions data"
+        else
+          echo "has_changes=true" >> $GITHUB_OUTPUT
+          echo "✅ Changes detected in server versions data"
+          git diff --stat data/server_versions.json
+        fi
+
+    - name: Validate JSON structure
+      if: steps.check_changes.outputs.has_changes == 'true'
+      run: |
+        echo "🔍 Validating updated JSON structure..."
+
+        # Check if JSON is valid
+        if ! jq empty data/server_versions.json; then
+          echo "❌ Invalid JSON structure"
+          exit 1
+        fi
+
+        # Check required fields
+        if ! jq -e 'type == "array" and length > 0' data/server_versions.json > /dev/null; then
+          echo "❌ JSON should be a non-empty array"
+          exit 1
+        fi
+
+        # Check each version has required fields
+        if ! jq -e 'all(has("version") and has("releaseDate") and has("eolDate"))' data/server_versions.json > /dev/null; then
+          echo "❌ Each version should have version, releaseDate, and eolDate fields"
+          exit 1
+        fi
+
+        echo "✅ JSON structure validation passed"
+
+        # Show summary
+        version_count=$(jq 'length' data/server_versions.json)
+        latest_version=$(jq -r '.[0].version' data/server_versions.json)
+        echo "📊 Summary: $version_count versions, latest: MongoDB $latest_version"
+
+    - name: Commit and push changes
+      if: steps.check_changes.outputs.has_changes == 'true'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add data/server_versions.json
+
+        # Include backup files if they exist
+        git add data/server_versions.backup.*.json 2>/dev/null || true
+
+        git commit -m "🔄 Update MongoDB server version data
+
+        - Updated: $(date -u +'%Y-%m-%d %H:%M:%S UTC')
+        - Source: https://www.mongodb.com/legal/support-policy/lifecycles
+        - Force update: ${{ github.event.inputs.force_update }}
+        - Versions: $(jq 'length' data/server_versions.json)
+        - Latest: MongoDB $(jq -r '.[0].version' data/server_versions.json)
+
+        Auto-updated by GitHub Actions from MongoDB support policy"
+
+        echo "📤 Pushing changes..."
+        git push
+        echo "✅ Successfully pushed server version updates"
+
+    - name: Create summary
+      if: always()
+      run: |
+        echo "# 🔄 MongoDB Server Version Update Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Updated:** $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+        echo "**Source:** https://www.mongodb.com/legal/support-policy/lifecycles" >> $GITHUB_STEP_SUMMARY
+        echo "**Force Update:** ${{ github.event.inputs.force_update }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Backup Created:** ${{ github.event.inputs.backup_existing }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+        if [ "${{ steps.check_changes.outputs.has_changes }}" == "true" ]; then
+          echo "✅ **Status:** Successfully updated server version data" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f "data/server_versions.json" ]; then
+            version_count=$(jq 'length' data/server_versions.json)
+            latest_version=$(jq -r '.[0].version' data/server_versions.json)
+            latest_release=$(jq -r '.[0].releaseDate' data/server_versions.json)
+            latest_eol=$(jq -r '.[0].eolDate' data/server_versions.json)
+
+            echo "**Total Versions:** $version_count" >> $GITHUB_STEP_SUMMARY
+            echo "**Latest Version:** MongoDB $latest_version" >> $GITHUB_STEP_SUMMARY
+            echo "**Latest Release Date:** $latest_release" >> $GITHUB_STEP_SUMMARY
+            echo "**Latest EOL Date:** $latest_eol" >> $GITHUB_STEP_SUMMARY
+
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "## Recent Versions" >> $GITHUB_STEP_SUMMARY
+            echo "| Version | Release Date | EOL Date |" >> $GITHUB_STEP_SUMMARY
+            echo "|---------|--------------|----------|" >> $GITHUB_STEP_SUMMARY
+            jq -r '.[:5] | .[] | "| MongoDB \(.version) | \(.releaseDate) | \(.eolDate) |"' data/server_versions.json >> $GITHUB_STEP_SUMMARY
+          fi
+        else
+          echo "ℹ️ **Status:** No updates needed (data already current)" >> $GITHUB_STEP_SUMMARY
+        fi
+
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "---" >> $GITHUB_STEP_SUMMARY
+        echo "*Next scheduled update: 1st of next month at 8:00 AM UTC*" >> $GITHUB_STEP_SUMMARY
