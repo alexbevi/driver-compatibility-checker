@@ -501,8 +501,188 @@
       "version": "1.4.2",
       "releaseDate": "2016-09-30",
       "originalTag": "1.4.2"
+    },
+    {
+      "version": "1.4.1",
+      "releaseDate": "2016-09-20",
+      "originalTag": "1.4.1"
+    },
+    {
+      "version": "1.4.0",
+      "releaseDate": "2016-08-10",
+      "originalTag": "1.4.0"
+    },
+    {
+      "version": "1.3.6",
+      "releaseDate": "2016-10-18",
+      "originalTag": "1.3.6"
+    },
+    {
+      "version": "1.3.5",
+      "releaseDate": "2016-03-30",
+      "originalTag": "1.3.5"
+    },
+    {
+      "version": "1.3.4",
+      "releaseDate": "2016-03-15",
+      "originalTag": "1.3.4"
+    },
+    {
+      "version": "1.3.3",
+      "releaseDate": "2016-02-05",
+      "originalTag": "1.3.3"
+    },
+    {
+      "version": "1.3.2",
+      "releaseDate": "2016-02-02",
+      "originalTag": "1.3.2"
+    },
+    {
+      "version": "1.3.1",
+      "releaseDate": "2016-01-18",
+      "originalTag": "1.3.1"
+    },
+    {
+      "version": "1.3.0",
+      "releaseDate": "2015-12-08",
+      "originalTag": "1.3.0"
+    },
+    {
+      "version": "1.2.4",
+      "releaseDate": "2016-03-15",
+      "originalTag": "1.2.4"
+    },
+    {
+      "version": "1.2.3",
+      "releaseDate": "2015-12-04",
+      "originalTag": "1.2.3"
+    },
+    {
+      "version": "1.2.2",
+      "releaseDate": "2015-11-30",
+      "originalTag": "1.2.2"
+    },
+    {
+      "version": "1.2.1",
+      "releaseDate": "2015-10-30",
+      "originalTag": "1.2.1"
+    },
+    {
+      "version": "1.2.0",
+      "releaseDate": "2015-10-13",
+      "originalTag": "1.2.0"
+    },
+    {
+      "version": "1.1.11",
+      "releaseDate": "2015-09-23",
+      "originalTag": "1.1.11"
+    },
+    {
+      "version": "1.1.10",
+      "releaseDate": "2015-07-22",
+      "originalTag": "1.1.10"
+    },
+    {
+      "version": "1.1.9",
+      "releaseDate": "2015-06-29",
+      "originalTag": "1.1.9"
+    },
+    {
+      "version": "1.1.8",
+      "releaseDate": "2015-06-21",
+      "originalTag": "1.1.8"
+    },
+    {
+      "version": "1.1.7",
+      "releaseDate": "2015-06-09",
+      "originalTag": "1.1.7"
+    },
+    {
+      "version": "1.1.6",
+      "releaseDate": "2015-05-18",
+      "originalTag": "1.1.6"
+    },
+    {
+      "version": "1.1.5",
+      "releaseDate": "2015-05-12",
+      "originalTag": "1.1.5"
+    },
+    {
+      "version": "1.1.4",
+      "releaseDate": "2015-04-01",
+      "originalTag": "1.1.4"
+    },
+    {
+      "version": "1.1.2",
+      "releaseDate": "2015-03-10",
+      "originalTag": "1.1.2"
+    },
+    {
+      "version": "1.1.0",
+      "releaseDate": "2015-01-28",
+      "originalTag": "1.1.0"
+    },
+    {
+      "version": "1.0.2",
+      "releaseDate": "2014-10-09",
+      "originalTag": "1.0.2"
+    },
+    {
+      "version": "1.0.0",
+      "releaseDate": "2014-08-27",
+      "originalTag": "1.0.0"
+    },
+    {
+      "version": "0.98.2",
+      "releaseDate": "2014-08-13",
+      "originalTag": "0.98.2"
+    },
+    {
+      "version": "0.98.0",
+      "releaseDate": "2014-07-16",
+      "originalTag": "0.98.0"
+    },
+    {
+      "version": "0.96.4",
+      "releaseDate": "2014-06-20",
+      "originalTag": "0.96.4"
+    },
+    {
+      "version": "0.96.2",
+      "releaseDate": "2014-06-06",
+      "originalTag": "0.96.2"
+    },
+    {
+      "version": "0.96.0",
+      "releaseDate": "2014-05-30",
+      "originalTag": "0.96.0"
+    },
+    {
+      "version": "0.94.2",
+      "releaseDate": "2014-04-14",
+      "originalTag": "0.94.2"
+    },
+    {
+      "version": "0.94.0",
+      "releaseDate": "2014-04-04",
+      "originalTag": "0.94.0"
+    },
+    {
+      "version": "0.92.2",
+      "releaseDate": "2014-03-17",
+      "originalTag": "0.92.2"
+    },
+    {
+      "version": "0.92.0",
+      "releaseDate": "2014-03-13",
+      "originalTag": "0.92.0"
+    },
+    {
+      "version": "0.90.0",
+      "releaseDate": "2013-12-05",
+      "originalTag": "0.90.0"
     }
   ],
-  "lastUpdated": "2025-08-08T15:57:45.176Z",
+  "lastUpdated": "2025-08-08T16:00:03.394Z",
   "forceRecreated": true
 }
