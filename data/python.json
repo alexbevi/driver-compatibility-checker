@@ -2,35 +2,173 @@
   "driver": "Python",
   "repository": "https://github.com/mongodb/mongo-python-driver",
   "versions": [
-    { "version": "4.14.0", "releaseDate": "2025-08-06" },
-    { "version": "4.13.2", "releaseDate": "2025-06-16" },
-    { "version": "4.13.1", "releaseDate": "2025-06-11" },
-    { "version": "4.13.0", "releaseDate": "2025-05-14" },
-    { "version": "4.12.1", "releaseDate": "2025-04-29" },
-    { "version": "4.12.0", "releaseDate": "2025-04-08" },
-    { "version": "4.11.3", "releaseDate": "2025-03-18" },
-    { "version": "4.11.2", "releaseDate": "2025-03-03" },
-    { "version": "4.11.1", "releaseDate": "2025-02-10" },
-    { "version": "4.11.0", "releaseDate": "2025-01-28" },
-    { "version": "4.10.1", "releaseDate": "2024-10-01" },
-    { "version": "4.10.0", "releaseDate": "2024-10-01" },
-    { "version": "4.9.2", "releaseDate": "2024-10-02" },
-    { "version": "4.9.1", "releaseDate": "2024-09-18" },
-    { "version": "4.9.0", "releaseDate": "2024-08-19" },
-    { "version": "4.8.0", "releaseDate": "2024-06-25" },
-    { "version": "4.7.4", "releaseDate": "2024-08-19" },
-    { "version": "4.7.3", "releaseDate": "2024-06-20" },
-    { "version": "4.7.2", "releaseDate": "2024-04-29" },
-    { "version": "4.7.1", "releaseDate": "2024-04-15" },
-    { "version": "4.7.0", "releaseDate": "2024-04-08" },
-    { "version": "4.6.5", "releaseDate": "2024-08-19" },
-    { "version": "4.6.4", "releaseDate": "2024-06-04" },
-    { "version": "4.6.3", "releaseDate": "2024-04-15" },
-    { "version": "4.6.2", "releaseDate": "2024-02-26" },
-    { "version": "4.6.1", "releaseDate": "2023-12-07" },
-    { "version": "4.6.0", "releaseDate": "2023-11-14" },
-    { "version": "4.5.1", "releaseDate": "2023-10-05" },
-    { "version": "4.5.0", "releaseDate": "2023-08-23" },
-    { "version": "4.4.1", "releaseDate": "2023-07-11" }
+    {
+      "version": "4.14.0",
+      "releaseDate": "2025-08-06"
+    },
+    {
+      "version": "4.13.2",
+      "releaseDate": "2025-06-16"
+    },
+    {
+      "version": "4.13.1",
+      "releaseDate": "2025-06-11"
+    },
+    {
+      "version": "4.13.0",
+      "releaseDate": "2025-05-14"
+    },
+    {
+      "version": "4.12.1",
+      "releaseDate": "2025-04-29"
+    },
+    {
+      "version": "4.12.0",
+      "releaseDate": "2025-04-08"
+    },
+    {
+      "version": "4.11.3",
+      "releaseDate": "2025-03-18"
+    },
+    {
+      "version": "4.11.2",
+      "releaseDate": "2025-03-04"
+    },
+    {
+      "version": "4.11.1",
+      "releaseDate": "2025-02-10"
+    },
+    {
+      "version": "4.10.1",
+      "releaseDate": "2024-10-02"
+    },
+    {
+      "version": "4.10.0",
+      "releaseDate": "2024-10-01"
+    },
+    {
+      "version": "4.9.2",
+      "releaseDate": "2024-10-02"
+    },
+    {
+      "version": "4.9.1",
+      "releaseDate": "2024-09-18"
+    },
+    {
+      "version": "4.8.0",
+      "releaseDate": "2024-06-26"
+    },
+    {
+      "version": "4.7.3",
+      "releaseDate": "2024-06-04"
+    },
+    {
+      "version": "4.7.2",
+      "releaseDate": "2024-05-07"
+    },
+    {
+      "version": "4.7.1",
+      "releaseDate": "2024-04-30"
+    },
+    {
+      "version": "4.7.0",
+      "releaseDate": "2024-04-24"
+    },
+    {
+      "version": "4.6.3",
+      "releaseDate": "2024-06-11"
+    },
+    {
+      "version": "4.6.2",
+      "releaseDate": "2024-02-21"
+    },
+    {
+      "version": "4.6.1",
+      "releaseDate": "2023-11-29"
+    },
+    {
+      "version": "4.6.0",
+      "releaseDate": "2023-11-01"
+    },
+    {
+      "version": "4.5.0",
+      "releaseDate": "2023-08-22"
+    },
+    {
+      "version": "4.4.1",
+      "releaseDate": "2023-07-13"
+    },
+    {
+      "version": "4.4.0",
+      "releaseDate": "2023-06-21"
+    },
+    {
+      "version": "4.3.3",
+      "releaseDate": "2022-11-17"
+    },
+    {
+      "version": "4.3.2",
+      "releaseDate": "2022-10-18"
+    },
+    {
+      "version": "4.2.0",
+      "releaseDate": "2022-07-20"
+    },
+    {
+      "version": "4.1.1",
+      "releaseDate": "2022-04-13"
+    },
+    {
+      "version": "4.1.0",
+      "releaseDate": "2022-04-04"
+    },
+    {
+      "version": "4.0.2",
+      "releaseDate": "2022-03-03"
+    },
+    {
+      "version": "4.0.1",
+      "releaseDate": "2022-03-03"
+    },
+    {
+      "version": "3.13.0",
+      "releaseDate": "2022-11-01"
+    },
+    {
+      "version": "3.12.3",
+      "releaseDate": "2022-03-03"
+    },
+    {
+      "version": "3.12.0",
+      "releaseDate": "2021-07-13"
+    },
+    {
+      "version": "3.11.4",
+      "releaseDate": "2021-05-28"
+    },
+    {
+      "version": "3.11.2",
+      "releaseDate": "2020-12-02"
+    },
+    {
+      "version": "3.11.1",
+      "releaseDate": "2020-11-17"
+    },
+    {
+      "version": "3.11.0",
+      "releaseDate": "2020-07-30"
+    },
+    {
+      "version": "3.10.1",
+      "releaseDate": "2020-02-03"
+    },
+    {
+      "version": "3.10.0",
+      "releaseDate": "2020-02-03"
+    },
+    {
+      "version": "3.9.0",
+      "releaseDate": "2020-02-03"
+    }
   ]
 }
