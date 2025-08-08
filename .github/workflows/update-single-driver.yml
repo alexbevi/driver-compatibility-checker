@@ -277,12 +277,6 @@ jobs:
                 delete existingData.forceRecreated;
               }
 
-              // Limit to most recent 100 versions
-              if (existingData.versions.length > 100) {
-                console.log(`Limiting to most recent 100 versions (was ${existingData.versions.length})`);
-                existingData.versions = existingData.versions.slice(0, 100);
-              }
-
               // Write updated data
               fs.writeFileSync(DATA_FILE, JSON.stringify(existingData, null, 2) + '\n');
               console.log(`✅ Updated ${DATA_FILE} with ${existingData.versions.length} versions`);
