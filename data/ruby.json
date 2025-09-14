@@ -3,6 +3,10 @@
   "repository": "https://github.com/mongodb/mongo-ruby-driver",
   "versions": [
     {
+      "version": "2.21.3",
+      "releaseDate": "2025-08-19"
+    },
+    {
       "version": "2.21.2",
       "releaseDate": "2025-07-15"
     },
@@ -13,6 +17,10 @@
     {
       "version": "2.21.0",
       "releaseDate": "2024-09-19"
+    },
+    {
+      "version": "2.20.2",
+      "releaseDate": "2025-08-20"
     },
     {
       "version": "2.20.1",
@@ -193,214 +201,6 @@
     {
       "version": "2.9.2",
       "releaseDate": "2019-09-23"
-    },
-    {
-      "version": "2.9.1",
-      "releaseDate": "2019-08-13"
-    },
-    {
-      "version": "2.9.0",
-      "releaseDate": "2019-06-20"
-    },
-    {
-      "version": "2.8.0",
-      "releaseDate": "2019-03-21"
-    },
-    {
-      "version": "2.7.2",
-      "releaseDate": "2019-03-21"
-    },
-    {
-      "version": "2.7.1",
-      "releaseDate": "2019-02-25"
-    },
-    {
-      "version": "2.7.0",
-      "releaseDate": "2019-01-31"
-    },
-    {
-      "version": "2.6.4",
-      "releaseDate": "2019-01-23"
-    },
-    {
-      "version": "2.6.2",
-      "releaseDate": "2018-08-13"
-    },
-    {
-      "version": "2.6.1",
-      "releaseDate": "2018-07-11"
-    },
-    {
-      "version": "2.6.0",
-      "releaseDate": "2018-06-27"
-    },
-    {
-      "version": "2.5.3",
-      "releaseDate": "2018-05-04"
-    },
-    {
-      "version": "2.5.2",
-      "releaseDate": "2018-05-03"
-    },
-    {
-      "version": "2.5.1",
-      "releaseDate": "2018-02-20"
-    },
-    {
-      "version": "2.5.0",
-      "releaseDate": "2018-01-17"
-    },
-    {
-      "version": "2.4.3",
-      "releaseDate": "2017-07-24"
-    },
-    {
-      "version": "2.4.2",
-      "releaseDate": "2017-05-29"
-    },
-    {
-      "version": "2.4.1",
-      "releaseDate": "2016-12-20"
-    },
-    {
-      "version": "2.4.0",
-      "releaseDate": "2016-11-29"
-    },
-    {
-      "version": "2.4.0.rc1",
-      "releaseDate": "2016-11-01"
-    },
-    {
-      "version": "2.4.0.rc0",
-      "releaseDate": "2016-09-19"
-    },
-    {
-      "version": "2.3.1",
-      "releaseDate": "2016-11-01"
-    },
-    {
-      "version": "2.3.0",
-      "releaseDate": "2016-08-16"
-    },
-    {
-      "version": "2.2.7",
-      "releaseDate": "2016-07-25"
-    },
-    {
-      "version": "2.2.6",
-      "releaseDate": "2016-07-12"
-    },
-    {
-      "version": "2.2.5",
-      "releaseDate": "2016-04-29"
-    },
-    {
-      "version": "2.2.4",
-      "releaseDate": "2016-03-01"
-    },
-    {
-      "version": "2.2.3",
-      "releaseDate": "2016-02-18"
-    },
-    {
-      "version": "2.2.2",
-      "releaseDate": "2016-01-25"
-    },
-    {
-      "version": "2.2.0",
-      "releaseDate": "2015-12-07"
-    },
-    {
-      "version": "2.2.0.rc0",
-      "releaseDate": "2015-11-16"
-    },
-    {
-      "version": "2.1.2",
-      "releaseDate": "2015-10-16"
-    },
-    {
-      "version": "2.1.1",
-      "releaseDate": "2015-09-30"
-    },
-    {
-      "version": "2.1.0",
-      "releaseDate": "2015-09-10"
-    },
-    {
-      "version": "2.0.6",
-      "releaseDate": "2015-06-24"
-    },
-    {
-      "version": "2.0.5",
-      "releaseDate": "2015-06-11"
-    },
-    {
-      "version": "2.0.4",
-      "releaseDate": "2015-05-14"
-    },
-    {
-      "version": "2.0.3",
-      "releaseDate": "2015-04-28"
-    },
-    {
-      "version": "2.0.2",
-      "releaseDate": "2015-03-31"
-    },
-    {
-      "version": "2.0.1",
-      "releaseDate": "2015-03-26"
-    },
-    {
-      "version": "2.0.0",
-      "releaseDate": "2015-03-26"
-    },
-    {
-      "version": "1.12.5",
-      "releaseDate": "2015-12-01"
-    },
-    {
-      "version": "1.12.4",
-      "releaseDate": "2015-10-29"
-    },
-    {
-      "version": "1.12.3",
-      "releaseDate": "2015-10-29"
-    },
-    {
-      "version": "1.12.2",
-      "releaseDate": "2015-05-19"
-    },
-    {
-      "version": "1.12.1",
-      "releaseDate": "2015-03-31"
-    },
-    {
-      "version": "1.12.0",
-      "releaseDate": "2015-01-29"
-    },
-    {
-      "version": "1.11.0",
-      "releaseDate": "2014-09-10"
-    },
-    {
-      "version": "1.10.2",
-      "releaseDate": "2014-06-16"
-    },
-    {
-      "version": "1.10.1",
-      "releaseDate": "2014-05-16"
-    },
-    {
-      "version": "1.10.0",
-      "releaseDate": "2014-04-03"
-    },
-    {
-      "version": "1.9.2",
-      "releaseDate": "2013-08-21"
-    },
-    {
-      "version": "1.9.1",
-      "releaseDate": "2013-07-09"
     }
   ]
 }
