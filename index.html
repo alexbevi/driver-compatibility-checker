@@ -403,6 +403,16 @@
       line-height: 1.6;
       font-size: 0.9rem;
     }
+    /* Warning-specific styling */
+    .admonition.warning {
+      border-left: 4px solid var(--warning-color);
+      background: rgba(245, 158, 11, 0.1); /* light yellow */
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .admonition.warning .admonition-title {
+      color: var(--warning-color);
+    }
 
     /* Footer styles */
     .footer {
@@ -466,6 +476,16 @@
         Per the <a href="https://www.mongodb.com/legal/support-policy/lifecycles" target="_blank" rel="noopener" style="color: var(--primary-color);">MongoDB Official Support Policy</a>, drivers released more than 3 years after a MongoDB Server version's end of life date should not be considered supported, and may no longer be compatible with that server version.
         <br/><br/>
         "Compatibility" in this case implies support for that server version hasn't been explicitly removed from the driver, so your application should continue to connect and operate as expected.
+      </div>
+    </div>
+
+    <div class="admonition warning">
+      <div class="admonition-title">
+        <span class="admonition-icon">⚠️</span>
+        Warning
+      </div>
+      <div class="admonition-content">
+        <u>ALWAYS</u> test your application after upgrading your MongoDB driver or server version, even if this tool indicates compatibility. More information can be found in the following blog post: <a href="https://alexbevi.com/blog/2025/07/30/mongodb-driver-compatibility-with-mongodb-servers/" target="_blank" rel="noopener" style="color: var(--primary-color);">MongoDB Driver Compatibility with MongoDB Servers</a>.
       </div>
     </div>
 
