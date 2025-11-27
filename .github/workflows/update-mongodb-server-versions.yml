@@ -71,14 +71,6 @@ jobs:
           // Clean the date string
           const cleaned = dateStr.trim().replace(/[^\w\s,.-]/g, '');
 
-          // Try different date formats
-          const formats = [
-            // Standard formats
-            /^(\w+)\s+(\d{1,2}),?\s+(\d{4})$/,  // "July 19, 2022" or "July 19 2022"
-            /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/,   // "7/19/2022"
-            /^(\d{4})-(\d{1,2})-(\d{1,2})$/,    // "2022-07-19"
-          ];
-
           const monthNames = {
             'january': '01', 'jan': '01',
             'february': '02', 'feb': '02',
@@ -94,8 +86,9 @@ jobs:
             'december': '12', 'dec': '12'
           };
 
-          // Try month day, year format
-          const monthDayYear = cleaned.match(formats[0]);
+          // Try different date formats
+          // "July 19, 2022" or "July 19 2022" - Month Day, Year
+          const monthDayYear = cleaned.match(/^(\w+)\s+(\d{1,2}),?\s+(\d{4})$/);
           if (monthDayYear) {
             const [, month, day, year] = monthDayYear;
             const monthNum = monthNames[month.toLowerCase()];
@@ -104,16 +97,29 @@ jobs:
             }
           }
 
-          // Try other formats
-          const mmddyyyy = cleaned.match(formats[1]);
+          // "October 2024" or "July 2022" - Month Year (no day)
+          const monthYear = cleaned.match(/^(\w+)\s+(\d{4})$/);
+          if (monthYear) {
+            const [, month, year] = monthYear;
+            const monthNum = monthNames[month.toLowerCase()];
+            if (monthNum) {
+              // Use the 1st day of the month for release dates
+              return `${year}-${monthNum}-01`;
+            }
+          }
+
+          // "7/19/2022" - MM/DD/YYYY
+          const mmddyyyy = cleaned.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
           if (mmddyyyy) {
             const [, month, day, year] = mmddyyyy;
             return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
           }
 
-          const yyyymmdd = cleaned.match(formats[2]);
+          // "2022-07-19" - Already in YYYY-MM-DD format
+          const yyyymmdd = cleaned.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
           if (yyyymmdd) {
-            return cleaned; // Already in correct format
+            const [, year, month, day] = yyyymmdd;
+            return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
           }
 
           // Try to parse with Date constructor as fallback
@@ -159,97 +165,108 @@ jobs:
               timeout: 30000
             });
 
-            // Wait for content to load            
+            // Wait for content to load
             const sleep = ms => new Promise(res => setTimeout(res, ms));
             await sleep(3000);
-            
+
             console.log('🔍 Extracting server version data...');
 
             // Extract version data from the page
             const versionData = await page.evaluate(() => {
               const versions = [];
 
-              // Look for tables containing version information
-              const tables = document.querySelectorAll('table');
+              // Helper function to clean text
+              const cleanText = (text) => text.trim().replace(/\s+/g, ' ');
 
-              for (const table of tables) {
-                const rows = table.querySelectorAll('tr');
+              // Find all headings that identify the tables we want
+              const allHeadings = document.querySelectorAll('h1, h2, h3, h4');
+              const targetSections = [];
 
-                for (let i = 0; i < rows.length; i++) {
-                  const row = rows[i];
-                  const cells = row.querySelectorAll('td, th');
+              for (const heading of allHeadings) {
+                const headingText = cleanText(heading.textContent);
+                if (headingText === 'MongoDB Server' ||
+                    headingText === 'MongoDB Rapid Releases and Minor Releases') {
+                  targetSections.push({
+                    heading: headingText,
+                    element: heading
+                  });
+                }
+              }
 
-                  if (cells.length >= 3) {
-                    const cellTexts = Array.from(cells).map(cell =>
-                      cell.textContent.trim().replace(/\s+/g, ' ')
-                    );
+              console.log(`Found ${targetSections.length} target sections`);
 
-                    // Look for patterns that indicate version information
-                    for (let j = 0; j < cellTexts.length; j++) {
-                      const text = cellTexts[j];
+              // For each target section, find the table that follows it
+              for (const section of targetSections) {
+                let currentElement = section.element.nextElementSibling;
+                let foundTable = false;
 
-                      // Match MongoDB version patterns
-                      const versionMatch = text.match(/(?:MongoDB\s+)?(\d+\.\d+)(?:\.\d+)?/i);
-                      if (versionMatch) {
-                        const version = versionMatch[1];
+                // Search for the table following this heading
+                while (currentElement && !foundTable) {
+                  if (currentElement.tagName === 'TABLE') {
+                    foundTable = true;
+                    console.log(`Processing table for section: ${section.heading}`);
 
-                        // Look for dates in adjacent cells
-                        let releaseDate = '';
-                        let eolDate = '';
+                    const rows = currentElement.querySelectorAll('tr');
+                    let headerRowIndex = -1;
 
-                        // Check surrounding cells for date information
-                        for (let k = Math.max(0, j-2); k < Math.min(cellTexts.length, j+3); k++) {
-                          if (k === j) continue;
-
-                          const cellText = cellTexts[k];
-
-                          // Date patterns
-                          if (cellText.match(/\b\d{4}\b/) &&
-                              (cellText.match(/\b(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\w*\b/i) ||
-                               cellText.match(/\b\d{1,2}\/\d{1,2}\/\d{4}\b/))) {
-
-                            // Determine if it's release date or EOL date based on context
-                            const lowerText = cellText.toLowerCase();
-                            if (lowerText.includes('release') || lowerText.includes('ga') || k < j) {
-                              releaseDate = cellText;
-                            } else if (lowerText.includes('eol') || lowerText.includes('end') || k > j) {
-                              eolDate = cellText;
-                            } else if (!releaseDate) {
-                              releaseDate = cellText;
-                            } else if (!eolDate) {
-                              eolDate = cellText;
-                            }
-                          }
+                    // Find the header row
+                    for (let i = 0; i < rows.length; i++) {
+                      const headerCells = rows[i].querySelectorAll('th');
+                      if (headerCells.length >= 3) {
+                        const headers = Array.from(headerCells).map(th => cleanText(th.textContent).toLowerCase());
+                        if (headers.some(h => h.includes('release')) &&
+                            headers.some(h => h.includes('end of life'))) {
+                          headerRowIndex = i;
+                          break;
                         }
+                      }
+                    }
 
-                        if (version && (releaseDate || eolDate)) {
+                    if (headerRowIndex === -1) {
+                      console.warn(`No header row found for ${section.heading}`);
+                      break;
+                    }
+
+                    // Process data rows (skip header row)
+                    for (let i = headerRowIndex + 1; i < rows.length; i++) {
+                      const cells = rows[i].querySelectorAll('td');
+
+                      if (cells.length >= 3) {
+                        const release = cleanText(cells[0].textContent);
+                        const releaseDate = cleanText(cells[1].textContent);
+                        const eolDate = cleanText(cells[2].textContent);
+
+                        // Extract version number from release column
+                        // Matches patterns like "MongoDB 8.0", "MongoDB 8.2 (Rapid Release)", etc.
+                        const versionMatch = release.match(/MongoDB\s+(\d+\.\d+)/i);
+
+                        if (versionMatch) {
+                          const version = versionMatch[1];
+
                           versions.push({
                             version,
                             releaseDate: releaseDate || 'Unknown',
                             eolDate: eolDate || 'TBD',
-                            rawData: cellTexts
+                            source: section.heading,
+                            rawRelease: release
                           });
+
+                          console.log(`Extracted: ${version} | ${releaseDate} | ${eolDate} (from ${section.heading})`);
                         }
                       }
                     }
+                  } else if (currentElement.tagName === 'H1' ||
+                             currentElement.tagName === 'H2' ||
+                             currentElement.tagName === 'H3') {
+                    // Stop if we hit another heading (section boundary)
+                    break;
                   }
+
+                  currentElement = currentElement.nextElementSibling;
                 }
               }
 
-              // Also try to find version info in divs, sections, etc.
-              const allText = document.body.textContent;
-              const versionMatches = allText.matchAll(/MongoDB\s+(\d+\.\d+)[\s\S]*?(\w+\s+\d{1,2},?\s+\d{4}|\d{1,2}\/\d{1,2}\/\d{4})[\s\S]*?(?:EOL|End of Life)[\s\S]*?(\w+\s+\d{1,2},?\s+\d{4}|\d{1,2}\/\d{1,2}\/\d{4}|TBD)/gi);
-
-              for (const match of versionMatches) {
-                const [, version, releaseDate, eolDate] = match;
-                versions.push({
-                  version,
-                  releaseDate,
-                  eolDate,
-                  source: 'text_extraction'
-                });
-              }
-
+              console.log(`Total versions extracted: ${versions.length}`);
               return versions;
             });
 
@@ -265,17 +282,31 @@ jobs:
         function getFallbackVersionData() {
           console.log('📚 Using fallback version data...');
           return [
-            { version: "8.0", releaseDate: "October 2, 2024", eolDate: "TBD" },
-            { version: "7.0", releaseDate: "August 15, 2023", eolDate: "August 31, 2026" },
-            { version: "6.0", releaseDate: "July 19, 2022", eolDate: "July 31, 2025" },
-            { version: "5.0", releaseDate: "July 13, 2021", eolDate: "October 31, 2024" },
-            { version: "4.4", releaseDate: "July 25, 2020", eolDate: "February 29, 2024" },
-            { version: "4.2", releaseDate: "August 13, 2019", eolDate: "April 30, 2023" },
-            { version: "4.0", releaseDate: "June 26, 2018", eolDate: "April 30, 2022" },
-            { version: "3.6", releaseDate: "November 29, 2017", eolDate: "April 30, 2021" },
-            { version: "3.4", releaseDate: "November 29, 2016", eolDate: "January 31, 2020" },
-            { version: "3.2", releaseDate: "December 8, 2015", eolDate: "September 30, 2018" },
-            { version: "3.0", releaseDate: "March 3, 2015", eolDate: "February 28, 2018" }
+            // MongoDB Server (Major Releases)
+            { version: "8.0", releaseDate: "October 2024", eolDate: "October 31, 2029" },
+            { version: "7.0", releaseDate: "August 2023", eolDate: "August 31, 2027" },
+            { version: "6.0", releaseDate: "July 2022", eolDate: "July 31, 2025" },
+            { version: "5.0", releaseDate: "July 2021", eolDate: "October 31, 2024" },
+            { version: "4.4", releaseDate: "July 2020", eolDate: "February 29, 2024" },
+            { version: "4.2", releaseDate: "August 2019", eolDate: "April 30, 2023" },
+            { version: "4.0", releaseDate: "June 2018", eolDate: "April 30, 2022" },
+            { version: "3.6", releaseDate: "November 2017", eolDate: "April 30, 2021" },
+            { version: "3.4", releaseDate: "November 2016", eolDate: "January 31, 2020" },
+            { version: "3.2", releaseDate: "December 2015", eolDate: "September 30, 2018" },
+            { version: "3.0", releaseDate: "March 2015", eolDate: "February 28, 2018" },
+
+            // MongoDB Rapid Releases and Minor Releases
+            { version: "8.2", releaseDate: "September 17, 2025", eolDate: "March 30, 2026" },
+            { version: "8.1", releaseDate: "June 20, 2025", eolDate: "September 30, 2025" },
+            { version: "7.3", releaseDate: "March 27, 2024", eolDate: "October 31, 2024" },
+            { version: "7.2", releaseDate: "January 23, 2024", eolDate: "March 27, 2024" },
+            { version: "7.1", releaseDate: "October 18, 2023", eolDate: "January 23, 2024" },
+            { version: "6.3", releaseDate: "April 24, 2023", eolDate: "August 31, 2023" },
+            { version: "6.2", releaseDate: "February 9, 2023", eolDate: "April 24, 2023" },
+            { version: "6.1", releaseDate: "October 12, 2022", eolDate: "February 9, 2023" },
+            { version: "5.3", releaseDate: "March 23, 2022", eolDate: "July 31, 2022" },
+            { version: "5.2", releaseDate: "January 18, 2022", eolDate: "March 23, 2022" },
+            { version: "5.1", releaseDate: "November 9, 2021", eolDate: "January 18, 2022" }
           ];
         }
 
@@ -298,23 +329,43 @@ jobs:
               versionData = await scrapeMongoDBLifecycles();
 
               if (versionData.length === 0) {
-                console.log('⚠️ Web scraping returned no data, using fallback...');
+                console.log('⚠️ Web scraping returned no data');
+                console.log('  This could mean:');
+                console.log('  - The page structure has changed');
+                console.log('  - The target sections were not found');
+                console.log('  - Network issues prevented proper loading');
+                console.log('📚 Falling back to known version data...');
                 versionData = getFallbackVersionData();
+              } else {
+                console.log(`✅ Successfully scraped ${versionData.length} version entries from MongoDB website`);
               }
             } catch (error) {
               console.error('❌ Web scraping failed:', error.message);
-              console.log('📚 Using fallback version data...');
+              console.error('   Stack trace:', error.stack);
+              console.log('📚 Falling back to known version data...');
               versionData = getFallbackVersionData();
             }
 
             // Process and clean the data
+            console.log(`\n📊 Processing ${versionData.length} version entries...`);
+
             const processedVersions = versionData
-              .map(item => ({
-                version: item.version,
-                releaseDate: parseDate(item.releaseDate),
-                eolDate: parseDate(item.eolDate)
-              }))
-              .filter(item => item.version && item.releaseDate)
+              .map(item => {
+                const processed = {
+                  version: item.version,
+                  releaseDate: parseDate(item.releaseDate),
+                  eolDate: parseDate(item.eolDate)
+                };
+                console.log(`  - MongoDB ${processed.version}: Released ${processed.releaseDate}, EOL ${processed.eolDate}`);
+                return processed;
+              })
+              .filter(item => {
+                if (!item.version || !item.releaseDate) {
+                  console.warn(`  ⚠️ Skipping invalid entry: ${JSON.stringify(item)}`);
+                  return false;
+                }
+                return true;
+              })
               .sort((a, b) => {
                 // Sort by version number (descending)
                 const aVersion = parseFloat(a.version);
@@ -322,7 +373,7 @@ jobs:
                 return bVersion - aVersion;
               });
 
-            // Remove duplicates
+            // Remove duplicates (keep first occurrence, which is from web scraping)
             const uniqueVersions = [];
             const seenVersions = new Set();
 
@@ -330,10 +381,12 @@ jobs:
               if (!seenVersions.has(version.version)) {
                 seenVersions.add(version.version);
                 uniqueVersions.push(version);
+              } else {
+                console.log(`  ℹ️ Duplicate version ${version.version} found, keeping first occurrence`);
               }
             }
 
-            console.log(`✨ Processed ${uniqueVersions.length} unique server versions`);
+            console.log(`\n✨ Processed ${uniqueVersions.length} unique server versions`);
 
             // Check if update is needed
             if (!FORCE_UPDATE && existingData.length > 0) {
