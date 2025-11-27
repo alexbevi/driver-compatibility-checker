@@ -159,9 +159,10 @@ jobs:
               timeout: 30000
             });
 
-            // Wait for content to load
-            await page.waitForTimeout(3000);
-
+            // Wait for content to load            
+            const sleep = ms => new Promise(res => setTimeout(res, ms));
+            await sleep(3000);
+            
             console.log('🔍 Extracting server version data...');
 
             // Extract version data from the page
