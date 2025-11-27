@@ -159,21 +159,25 @@ jobs:
         }
 
         // Function to compare semantic versions
-        function compareVersions(a, b) {
-          const parseVersion = (v) => {
-            const parts = v.split('-')[0].split('.').map(n => parseInt(n, 10));
-            return parts;
-          };
-
-          const aParts = parseVersion(a);
-          const bParts = parseVersion(b);
-
-          for (let i = 0; i < Math.max(aParts.length, bParts.length); i++) {
-            const aPart = aParts[i] || 0;
-            const bPart = bParts[i] || 0;
-            if (aPart !== bPart) return bPart - aPart;
+        function isNewerVersion(lhs, rhs) {
+          const parse = (v) =>
+            v.split('-')[0]               // strip pre-release metadata
+             .split('.')
+             .map(n => Number(n) || 0);   // ensure numeric segments
+        
+          const a = parse(lhs);
+          const b = parse(rhs);
+          const len = Math.max(a.length, b.length);
+        
+          for (let i = 0; i < len; i++) {
+            const av = (i < a.length) ? a[i] : 0;
+            const bv = (i < b.length) ? b[i] : 0;
+        
+            if (av > bv) return false;   // lhs is newer
+            if (av < bv) return true;  // lhs is older
           }
-          return 0;
+        
+          return false; // equal
         }
 
         // Function to filter and format releases
@@ -193,7 +197,7 @@ jobs:
               releaseDate: release.published_at.split('T')[0],
               originalTag: release.tag_name
             }))
-            .sort((a, b) => compareVersions(a.version, b.version));
+            .sort((a, b) => isNewerVersion(a.version, b.version));
 
           console.log(`Processed ${processed.length} valid releases from ${releases.length} total`);
           return processed;
@@ -240,7 +244,7 @@ jobs:
               const latestExisting = existingData.versions[0].version;
               const latestNew = processedReleases[0].version;
 
-              if (compareVersions(latestNew, latestExisting) > 0) {
+              if (isNewerVersion(latestNew, latestExisting)) {
                 console.log(`New release found: ${latestNew} (latest existing: ${latestExisting})`);
                 needsUpdate = true;
               } else {
@@ -267,7 +271,7 @@ jobs:
                 // Combine and re-sort
                 const allVersions = [...newReleases, ...existingData.versions]
                   .map(v => ({ version: v.version, releaseDate: v.releaseDate }))
-                  .sort((a, b) => compareVersions(a.version, b.version));
+                  .sort((a, b) => isNewerVersion(a.version, b.version));
 
                 existingData.versions = allVersions;
 
