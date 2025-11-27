@@ -241,8 +241,8 @@ jobs:
             let needsUpdate = FORCE_RECREATE;
 
             if (!FORCE_RECREATE && existingData.versions.length > 0) {
-              const latestExisting = existingData.versions[0].version;
-              const latestNew = processedReleases[0].version;
+              const latestNew = existingData.versions[0].version;
+              const latestExisting = processedReleases[0].version;
 
               if (isNewerVersion(latestNew, latestExisting)) {
                 console.log(`New release found: ${latestNew} (latest existing: ${latestExisting})`);
