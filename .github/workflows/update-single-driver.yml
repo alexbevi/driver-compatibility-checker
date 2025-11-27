@@ -245,7 +245,7 @@ jobs:
               const latestExisting = processedReleases[0].version;
 
               if (isNewerVersion(latestNew, latestExisting)) {
-                console.log(`New release found: ${latestNew} (latest existing: ${latestExisting})`);
+                console.log(`New release found: ${latestExisting} (latest existing: ${latestNew})`);
                 needsUpdate = true;
               } else {
                 console.log('No newer releases found. Data is up to date.');
