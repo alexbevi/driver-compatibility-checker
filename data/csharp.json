@@ -4,384 +4,480 @@
   "versions": [
     {
       "version": "3.5.1",
-      "releaseDate": "2025-11-20"
-    },
-    {
-      "version": "2.11.1",
-      "releaseDate": "2020-08-25"
-    },
-    {
-      "version": "2.11.0",
-      "releaseDate": "2020-07-30"
-    },
-    {
-      "version": "2.10.4",
-      "releaseDate": "2020-05-05"
-    },
-    {
-      "version": "2.10.3",
-      "releaseDate": "2020-04-07"
-    },
-    {
-      "version": "2.10.2",
-      "releaseDate": "2020-02-14"
-    },
-    {
-      "version": "2.10.1",
-      "releaseDate": "2020-01-15"
-    },
-    {
-      "version": "2.10.0",
-      "releaseDate": "2019-12-10"
-    },
-    {
-      "version": "2.9.3",
-      "releaseDate": "2019-11-08"
-    },
-    {
-      "version": "2.10.0-beta1",
-      "releaseDate": "2019-10-02"
-    },
-    {
-      "version": "2.9.2",
-      "releaseDate": "2019-09-30"
-    },
-    {
-      "version": "2.9.1",
-      "releaseDate": "2019-08-21"
-    },
-    {
-      "version": "2.9.0",
-      "releaseDate": "2019-08-15"
-    },
-    {
-      "version": "2.8.1",
-      "releaseDate": "2019-05-15"
-    },
-    {
-      "version": "2.8.0",
-      "releaseDate": "2019-03-13"
-    },
-    {
-      "version": "2.7.3",
-      "releaseDate": "2019-01-24"
-    },
-    {
-      "version": "2.7.2",
-      "releaseDate": "2018-11-10"
-    },
-    {
-      "version": "2.7.1",
-      "releaseDate": "2018-11-08"
-    },
-    {
-      "version": "2.7.0",
-      "releaseDate": "2018-06-27"
-    },
-    {
-      "version": "2.6.1",
-      "releaseDate": "2018-05-17"
-    },
-    {
-      "version": "2.6.0",
-      "releaseDate": "2018-04-24"
-    },
-    {
-      "version": "2.5.1",
-      "releaseDate": "2018-04-19"
-    },
-    {
-      "version": "2.5.0",
-      "releaseDate": "2017-12-12"
-    },
-    {
-      "version": "2.4.4",
-      "releaseDate": "2017-06-08"
-    },
-    {
-      "version": "2.4.3",
-      "releaseDate": "2017-03-09"
-    },
-    {
-      "version": "2.4.2",
-      "releaseDate": "2017-02-02"
-    },
-    {
-      "version": "2.4.1",
-      "releaseDate": "2017-01-04"
-    },
-    {
-      "version": "2.4.0",
-      "releaseDate": "2016-11-29"
-    },
-    {
-      "version": "2.3.0",
-      "releaseDate": "2016-09-23"
-    },
-    {
-      "version": "2.2.4",
-      "releaseDate": "2016-05-18"
-    },
-    {
-      "version": "2.2.3",
-      "releaseDate": "2016-02-02"
-    },
-    {
-      "version": "2.2.2",
-      "releaseDate": "2016-01-15"
-    },
-    {
-      "version": "2.2.1",
-      "releaseDate": "2016-01-08"
-    },
-    {
-      "version": "1.11.0",
-      "releaseDate": "2015-12-09"
-    },
-    {
-      "version": "2.2.0",
-      "releaseDate": "2015-12-07"
-    },
-    {
-      "version": "2.1.1",
-      "releaseDate": "2015-11-11"
-    },
-    {
-      "version": "2.0.2",
-      "releaseDate": "2015-11-11"
-    },
-    {
-      "version": "2.1.0",
-      "releaseDate": "2015-10-19"
-    },
-    {
-      "version": "1.10.1",
-      "releaseDate": "2015-08-12"
-    },
-    {
-      "version": "2.0.1",
-      "releaseDate": "2015-06-08"
-    },
-    {
-      "version": "2.0.0",
-      "releaseDate": "2015-04-02"
-    },
-    {
-      "version": "1.10.0",
-      "releaseDate": "2015-01-29"
-    },
-    {
-      "version": "1.9.2",
-      "releaseDate": "2014-06-30"
-    },
-    {
-      "version": "1.9.1",
-      "releaseDate": "2014-05-15"
-    },
-    {
-      "version": "1.9.0",
-      "releaseDate": "2014-04-03"
+      "releaseDate": "2025-11-20",
+      "originalTag": "v3.5.1"
     },
     {
       "version": "3.5.0",
-      "releaseDate": "2025-09-10"
+      "releaseDate": "2025-09-10",
+      "originalTag": "v3.5.0"
     },
     {
       "version": "3.4.3",
-      "releaseDate": "2025-08-18"
+      "releaseDate": "2025-08-18",
+      "originalTag": "v3.4.3"
     },
     {
       "version": "3.4.2",
-      "releaseDate": "2025-07-25"
+      "releaseDate": "2025-07-25",
+      "originalTag": "v3.4.2"
     },
     {
       "version": "3.4.1",
-      "releaseDate": "2025-07-16"
+      "releaseDate": "2025-07-16",
+      "originalTag": "v3.4.1"
     },
     {
       "version": "3.4.0",
-      "releaseDate": "2025-05-01"
+      "releaseDate": "2025-05-01",
+      "originalTag": "v3.4.0"
     },
     {
       "version": "3.3.0",
-      "releaseDate": "2025-03-28"
+      "releaseDate": "2025-03-28",
+      "originalTag": "v3.3.0"
     },
     {
       "version": "3.2.1",
-      "releaseDate": "2025-02-20"
+      "releaseDate": "2025-02-20",
+      "originalTag": "v3.2.1"
     },
     {
       "version": "3.2.0",
-      "releaseDate": "2025-02-12"
+      "releaseDate": "2025-02-12",
+      "originalTag": "v3.2.0"
     },
     {
       "version": "3.1.0",
-      "releaseDate": "2024-12-05"
+      "releaseDate": "2024-12-05",
+      "originalTag": "v3.1.0"
     },
     {
       "version": "3.0.0",
-      "releaseDate": "2024-10-16"
+      "releaseDate": "2024-10-16",
+      "originalTag": "v3.0.0"
     },
     {
       "version": "2.30.0",
-      "releaseDate": "2024-10-16"
+      "releaseDate": "2024-10-16",
+      "originalTag": "v2.30.0"
     },
     {
       "version": "2.29.0",
-      "releaseDate": "2024-09-18"
+      "releaseDate": "2024-09-18",
+      "originalTag": "v2.29.0"
     },
     {
       "version": "2.28.0",
-      "releaseDate": "2024-07-23"
+      "releaseDate": "2024-07-23",
+      "originalTag": "v2.28.0"
     },
     {
       "version": "2.27.0",
-      "releaseDate": "2024-06-28"
+      "releaseDate": "2024-06-28",
+      "originalTag": "v2.27.0"
     },
     {
       "version": "2.26.0",
-      "releaseDate": "2024-06-12"
+      "releaseDate": "2024-06-12",
+      "originalTag": "v2.26.0"
     },
     {
       "version": "2.25.0",
-      "releaseDate": "2024-04-12"
+      "releaseDate": "2024-04-12",
+      "originalTag": "v2.25.0"
     },
     {
       "version": "2.24.0",
-      "releaseDate": "2024-02-21"
+      "releaseDate": "2024-02-21",
+      "originalTag": "v2.24.0"
     },
     {
       "version": "2.23.2",
-      "releaseDate": "2024-02-20"
+      "releaseDate": "2024-02-20",
+      "originalTag": "v2.23.2"
     },
     {
       "version": "2.23.1",
-      "releaseDate": "2023-12-15"
+      "releaseDate": "2023-12-15",
+      "originalTag": "v2.23.1"
     },
     {
       "version": "2.23.0",
-      "releaseDate": "2023-12-12"
+      "releaseDate": "2023-12-12",
+      "originalTag": "v2.23.0"
     },
     {
       "version": "2.22.0",
-      "releaseDate": "2023-10-09"
+      "releaseDate": "2023-10-09",
+      "originalTag": "v2.22.0"
     },
     {
       "version": "2.21.0",
-      "releaseDate": "2023-08-10"
+      "releaseDate": "2023-08-10",
+      "originalTag": "v2.21.0"
     },
     {
       "version": "2.20.0",
-      "releaseDate": "2023-06-21"
+      "releaseDate": "2023-06-21",
+      "originalTag": "v2.20.0"
     },
     {
       "version": "2.19.2",
-      "releaseDate": "2023-05-25"
+      "releaseDate": "2023-05-25",
+      "originalTag": "v2.19.2"
     },
     {
       "version": "2.19.1",
-      "releaseDate": "2023-03-27"
+      "releaseDate": "2023-03-27",
+      "originalTag": "v2.19.1"
     },
     {
       "version": "2.19.0",
-      "releaseDate": "2023-01-27"
+      "releaseDate": "2023-01-27",
+      "originalTag": "v2.19.0"
     },
     {
       "version": "2.18.0",
-      "releaseDate": "2022-10-14"
+      "releaseDate": "2022-10-14",
+      "originalTag": "v2.18.0"
     },
     {
       "version": "2.17.1",
-      "releaseDate": "2022-07-30"
+      "releaseDate": "2022-07-30",
+      "originalTag": "v2.17.1"
     },
     {
       "version": "2.17.0",
-      "releaseDate": "2022-07-18"
+      "releaseDate": "2022-07-18",
+      "originalTag": "v2.17.0"
     },
     {
       "version": "2.16.1",
-      "releaseDate": "2022-06-21"
+      "releaseDate": "2022-06-21",
+      "originalTag": "v2.16.1"
     },
     {
       "version": "2.16.0",
-      "releaseDate": "2022-06-06"
+      "releaseDate": "2022-06-06",
+      "originalTag": "v2.16.0"
     },
     {
       "version": "2.15.1",
-      "releaseDate": "2022-05-09"
+      "releaseDate": "2022-05-09",
+      "originalTag": "v2.15.1"
     },
     {
       "version": "2.15.0",
-      "releaseDate": "2022-03-09"
+      "releaseDate": "2022-03-09",
+      "originalTag": "v2.15.0"
     },
     {
       "version": "2.14.1",
-      "releaseDate": "2021-12-02"
+      "releaseDate": "2021-12-02",
+      "originalTag": "v2.14.1"
     },
     {
       "version": "2.14.0",
-      "releaseDate": "2021-11-24"
+      "releaseDate": "2021-11-24",
+      "originalTag": "v2.14.0"
     },
     {
       "version": "2.13.3",
-      "releaseDate": "2021-11-23"
-    },
-    {
-      "version": "2.13.2",
-      "releaseDate": "2021-10-06"
-    },
-    {
-      "version": "2.13.1",
-      "releaseDate": "2021-08-04"
-    },
-    {
-      "version": "2.13.0",
-      "releaseDate": "2021-07-13"
+      "releaseDate": "2021-11-23",
+      "originalTag": "v2.13.3"
     },
     {
       "version": "2.12.5",
-      "releaseDate": "2021-11-23"
+      "releaseDate": "2021-11-23",
+      "originalTag": "v2.12.5"
+    },
+    {
+      "version": "2.13.2",
+      "releaseDate": "2021-10-06",
+      "originalTag": "v2.13.2"
+    },
+    {
+      "version": "2.13.1",
+      "releaseDate": "2021-08-04",
+      "originalTag": "v2.13.1"
+    },
+    {
+      "version": "2.13.0",
+      "releaseDate": "2021-07-13",
+      "originalTag": "v2.13.0"
     },
     {
       "version": "2.12.4",
-      "releaseDate": "2021-06-04"
+      "releaseDate": "2021-06-04",
+      "originalTag": "v2.12.4"
     },
     {
       "version": "2.12.3",
-      "releaseDate": "2021-05-04"
+      "releaseDate": "2021-05-04",
+      "originalTag": "v2.12.3"
     },
     {
       "version": "2.12.2",
-      "releaseDate": "2021-04-07"
+      "releaseDate": "2021-04-07",
+      "originalTag": "v2.12.2"
     },
     {
       "version": "2.12.1",
-      "releaseDate": "2021-03-23"
+      "releaseDate": "2021-03-23",
+      "originalTag": "v2.12.1"
     },
     {
       "version": "2.12.0",
-      "releaseDate": "2021-03-03"
+      "releaseDate": "2021-03-03",
+      "originalTag": "v2.12.0"
     },
     {
       "version": "2.11.6",
-      "releaseDate": "2021-01-20"
+      "releaseDate": "2021-01-20",
+      "originalTag": "v2.11.6"
     },
     {
       "version": "2.11.5",
-      "releaseDate": "2020-12-02"
+      "releaseDate": "2020-12-02",
+      "originalTag": "v2.11.5"
     },
     {
       "version": "2.11.4",
-      "releaseDate": "2020-11-04"
+      "releaseDate": "2020-11-04",
+      "originalTag": "v2.11.4"
     },
     {
       "version": "2.11.3",
-      "releaseDate": "2020-10-15"
+      "releaseDate": "2020-10-15",
+      "originalTag": "v2.11.3"
     },
     {
       "version": "2.11.2",
-      "releaseDate": "2020-09-10"
+      "releaseDate": "2020-09-10",
+      "originalTag": "v2.11.2"
+    },
+    {
+      "version": "2.11.1",
+      "releaseDate": "2020-08-25",
+      "originalTag": "v2.11.1"
+    },
+    {
+      "version": "2.11.0",
+      "releaseDate": "2020-07-30",
+      "originalTag": "v2.11.0"
+    },
+    {
+      "version": "2.10.4",
+      "releaseDate": "2020-05-05",
+      "originalTag": "v2.10.4"
+    },
+    {
+      "version": "2.10.3",
+      "releaseDate": "2020-04-07",
+      "originalTag": "v2.10.3"
+    },
+    {
+      "version": "2.10.2",
+      "releaseDate": "2020-02-14",
+      "originalTag": "v2.10.2"
+    },
+    {
+      "version": "2.10.1",
+      "releaseDate": "2020-01-15",
+      "originalTag": "v2.10.1"
+    },
+    {
+      "version": "2.10.0",
+      "releaseDate": "2019-12-10",
+      "originalTag": "v2.10.0"
+    },
+    {
+      "version": "2.9.3",
+      "releaseDate": "2019-11-08",
+      "originalTag": "v2.9.3"
+    },
+    {
+      "version": "2.10.0-beta1",
+      "releaseDate": "2019-10-02",
+      "originalTag": "v2.10.0-beta1"
+    },
+    {
+      "version": "2.9.2",
+      "releaseDate": "2019-09-30",
+      "originalTag": "v2.9.2"
+    },
+    {
+      "version": "2.9.1",
+      "releaseDate": "2019-08-21",
+      "originalTag": "v2.9.1"
+    },
+    {
+      "version": "2.9.0",
+      "releaseDate": "2019-08-15",
+      "originalTag": "v2.9.0"
+    },
+    {
+      "version": "2.8.1",
+      "releaseDate": "2019-05-15",
+      "originalTag": "v2.8.1"
+    },
+    {
+      "version": "2.8.0",
+      "releaseDate": "2019-03-13",
+      "originalTag": "v2.8.0"
+    },
+    {
+      "version": "2.7.3",
+      "releaseDate": "2019-01-24",
+      "originalTag": "v2.7.3"
+    },
+    {
+      "version": "2.7.2",
+      "releaseDate": "2018-11-10",
+      "originalTag": "v2.7.2"
+    },
+    {
+      "version": "2.7.1",
+      "releaseDate": "2018-11-08",
+      "originalTag": "v2.7.1"
+    },
+    {
+      "version": "2.7.0",
+      "releaseDate": "2018-06-27",
+      "originalTag": "v2.7.0"
+    },
+    {
+      "version": "2.6.1",
+      "releaseDate": "2018-05-17",
+      "originalTag": "v2.6.1"
+    },
+    {
+      "version": "2.6.0",
+      "releaseDate": "2018-04-24",
+      "originalTag": "v2.6.0"
+    },
+    {
+      "version": "2.5.1",
+      "releaseDate": "2018-04-19",
+      "originalTag": "v2.5.1"
+    },
+    {
+      "version": "2.5.0",
+      "releaseDate": "2017-12-12",
+      "originalTag": "v2.5.0"
+    },
+    {
+      "version": "2.4.4",
+      "releaseDate": "2017-06-08",
+      "originalTag": "v2.4.4"
+    },
+    {
+      "version": "2.4.3",
+      "releaseDate": "2017-03-09",
+      "originalTag": "v2.4.3"
+    },
+    {
+      "version": "2.4.2",
+      "releaseDate": "2017-02-02",
+      "originalTag": "v2.4.2"
+    },
+    {
+      "version": "2.4.1",
+      "releaseDate": "2017-01-04",
+      "originalTag": "v2.4.1"
+    },
+    {
+      "version": "2.4.0",
+      "releaseDate": "2016-11-29",
+      "originalTag": "v2.4.0"
+    },
+    {
+      "version": "2.3.0",
+      "releaseDate": "2016-09-23",
+      "originalTag": "v2.3.0"
+    },
+    {
+      "version": "2.2.4",
+      "releaseDate": "2016-05-18",
+      "originalTag": "v2.2.4"
+    },
+    {
+      "version": "2.2.3",
+      "releaseDate": "2016-02-02",
+      "originalTag": "v2.2.3"
+    },
+    {
+      "version": "2.2.2",
+      "releaseDate": "2016-01-15",
+      "originalTag": "v2.2.2"
+    },
+    {
+      "version": "2.2.1",
+      "releaseDate": "2016-01-08",
+      "originalTag": "v2.2.1"
+    },
+    {
+      "version": "1.11.0",
+      "releaseDate": "2015-12-09",
+      "originalTag": "v1.11.0"
+    },
+    {
+      "version": "2.2.0",
+      "releaseDate": "2015-12-07",
+      "originalTag": "v2.2.0"
+    },
+    {
+      "version": "2.1.1",
+      "releaseDate": "2015-11-11",
+      "originalTag": "v2.1.1"
+    },
+    {
+      "version": "2.0.2",
+      "releaseDate": "2015-11-11",
+      "originalTag": "v2.0.2"
+    },
+    {
+      "version": "2.1.0",
+      "releaseDate": "2015-10-19",
+      "originalTag": "v2.1.0"
+    },
+    {
+      "version": "1.10.1",
+      "releaseDate": "2015-08-12",
+      "originalTag": "v1.10.1"
+    },
+    {
+      "version": "2.0.1",
+      "releaseDate": "2015-06-08",
+      "originalTag": "v2.0.1"
+    },
+    {
+      "version": "2.0.0",
+      "releaseDate": "2015-04-02",
+      "originalTag": "v2.0.0"
+    },
+    {
+      "version": "1.10.0",
+      "releaseDate": "2015-01-29",
+      "originalTag": "v1.10.0"
+    },
+    {
+      "version": "1.9.2",
+      "releaseDate": "2014-06-30",
+      "originalTag": "v1.9.2"
+    },
+    {
+      "version": "1.9.1",
+      "releaseDate": "2014-05-15",
+      "originalTag": "v1.9.1"
+    },
+    {
+      "version": "1.9.0",
+      "releaseDate": "2014-04-03",
+      "originalTag": "v1.9.0"
     }
   ],
-  "lastUpdated": "2025-11-27T13:43:50.209Z"
+  "lastUpdated": "2025-11-27T13:44:50.283Z",
+  "forceRecreated": true
 }
