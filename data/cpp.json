@@ -3,6 +3,21 @@
   "repository": "https://github.com/mongodb/mongo-cxx-driver",
   "versions": [
     {
+      "version": "4.1.4",
+      "releaseDate": "2025-10-08",
+      "originalTag": "r4.1.4"
+    },
+    {
+      "version": "4.1.3",
+      "releaseDate": "2025-09-30",
+      "originalTag": "r4.1.3"
+    },
+    {
+      "version": "4.1.2",
+      "releaseDate": "2025-09-03",
+      "originalTag": "r4.1.2"
+    },
+    {
       "version": "4.1.1",
       "releaseDate": "2025-07-01",
       "originalTag": "r4.1.1"
@@ -16,6 +31,11 @@
       "version": "4.0.0",
       "releaseDate": "2024-11-20",
       "originalTag": "r4.0.0"
+    },
+    {
+      "version": "3.11.1",
+      "releaseDate": "2025-10-08",
+      "originalTag": "r3.11.1"
     },
     {
       "version": "3.11.0",
@@ -203,6 +223,6 @@
       "originalTag": "r3.0.0"
     }
   ],
-  "lastUpdated": "2025-08-08T17:06:44.361Z",
+  "lastUpdated": "2025-11-27T11:16:13.774Z",
   "forceRecreated": true
 }
