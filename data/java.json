@@ -3,6 +3,18 @@
   "repository": "https://github.com/mongodb/mongo-java-driver",
   "versions": [
     {
+      "version": "5.6.2",
+      "releaseDate": "2025-12-08"
+    },
+    {
+      "version": "5.6.1",
+      "releaseDate": "2025-12-08"
+    },
+    {
+      "version": "5.5.2",
+      "releaseDate": "2025-12-08"
+    },
+    {
       "version": "5.6.0",
       "releaseDate": "2025-09-12"
     },
@@ -551,5 +563,5 @@
       "releaseDate": "2016-07-18"
     }
   ],
-  "lastUpdated": "2025-11-28T03:41:22.904Z"
+  "lastUpdated": "2025-12-09T03:47:36.816Z"
 }
