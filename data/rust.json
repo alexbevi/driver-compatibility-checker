@@ -3,6 +3,10 @@
   "repository": "https://github.com/mongodb/mongo-rust-driver",
   "versions": [
     {
+      "version": "3.5.0",
+      "releaseDate": "2026-01-14"
+    },
+    {
       "version": "3.4.1",
       "releaseDate": "2025-11-21"
     },
@@ -182,5 +186,6 @@
       "version": "0.9.0",
       "releaseDate": "2019-12-19"
     }
-  ]
+  ],
+  "lastUpdated": "2026-01-15T05:48:21.408Z"
 }
