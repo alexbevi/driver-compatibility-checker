@@ -3,6 +3,10 @@
   "repository": "https://github.com/mongodb/mongo-csharp-driver",
   "versions": [
     {
+      "version": "3.6.0",
+      "releaseDate": "2026-01-16"
+    },
+    {
       "version": "3.5.2",
       "releaseDate": "2025-11-27"
     },
@@ -387,5 +391,5 @@
       "releaseDate": "2014-04-03"
     }
   ],
-  "lastUpdated": "2025-11-27T18:13:27.072Z"
+  "lastUpdated": "2026-01-17T03:17:31.068Z"
 }
