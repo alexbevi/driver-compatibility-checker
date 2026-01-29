@@ -3,6 +3,10 @@
   "repository": "https://github.com/mongodb/mongo-go-driver",
   "versions": [
     {
+      "version": "2.5.0",
+      "releaseDate": "2026-01-28"
+    },
+    {
       "version": "2.4.2",
       "releaseDate": "2026-01-22"
     },
@@ -419,5 +423,5 @@
       "releaseDate": "2022-05-03"
     }
   ],
-  "lastUpdated": "2026-01-23T03:53:49.881Z"
+  "lastUpdated": "2026-01-29T04:17:32.876Z"
 }
