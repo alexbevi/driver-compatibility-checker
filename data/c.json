@@ -3,6 +3,10 @@
   "repository": "https://github.com/mongodb/mongo-c-driver",
   "versions": [
     {
+      "version": "2.3.3",
+      "releaseDate": "2026-07-14"
+    },
+    {
       "version": "2.3.2",
       "releaseDate": "2026-07-07"
     },
@@ -599,5 +603,5 @@
       "releaseDate": "2022-02-01"
     }
   ],
-  "lastUpdated": "2026-07-08T04:16:06.803Z"
+  "lastUpdated": "2026-07-15T04:07:02.434Z"
 }
