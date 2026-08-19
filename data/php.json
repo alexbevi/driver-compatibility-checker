@@ -3,6 +3,10 @@
   "repository": "https://github.com/mongodb/mongo-php-driver",
   "versions": [
     {
+      "version": "2.4.0",
+      "releaseDate": "2026-08-18"
+    },
+    {
       "version": "2.3.3",
       "releaseDate": "2026-05-22"
     },
@@ -415,5 +419,5 @@
       "releaseDate": "2020-02-04"
     }
   ],
-  "lastUpdated": "2026-05-22T07:42:55.263Z"
+  "lastUpdated": "2026-08-19T04:34:26.476Z"
 }
