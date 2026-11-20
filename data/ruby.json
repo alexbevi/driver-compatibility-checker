@@ -3,6 +3,10 @@
   "repository": "https://github.com/mongodb/mongo-ruby-driver",
   "versions": [
     {
+      "version": "2.26.2",
+      "releaseDate": "2026-11-19"
+    },
+    {
       "version": "2.26.1",
       "releaseDate": "2026-11-04"
     },
@@ -591,5 +595,5 @@
       "releaseDate": "2019-09-23"
     }
   ],
-  "lastUpdated": "2026-11-05T12:52:05.503Z"
+  "lastUpdated": "2026-11-20T13:45:04.368Z"
 }
