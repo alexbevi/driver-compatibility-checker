@@ -3,6 +3,10 @@
   "repository": "https://github.com/mongodb/node-mongodb-native",
   "versions": [
     {
+      "version": "7.9.1",
+      "releaseDate": "2026-11-19"
+    },
+    {
       "version": "7.9.0",
       "releaseDate": "2026-11-12"
     },
@@ -499,5 +503,5 @@
       "releaseDate": "2023-02-07"
     }
   ],
-  "lastUpdated": "2026-11-13T11:23:33.541Z"
+  "lastUpdated": "2026-11-20T12:00:00.685Z"
 }
