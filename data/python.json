@@ -3,6 +3,10 @@
   "repository": "https://github.com/mongodb/mongo-python-driver",
   "versions": [
     {
+      "version": "4.20.2",
+      "releaseDate": "2026-11-25"
+    },
+    {
       "version": "4.20.1",
       "releaseDate": "2026-11-19"
     },
@@ -235,5 +239,5 @@
       "releaseDate": "2020-02-03"
     }
   ],
-  "lastUpdated": "2026-11-20T13:20:17.979Z"
+  "lastUpdated": "2026-11-26T14:06:58.895Z"
 }
